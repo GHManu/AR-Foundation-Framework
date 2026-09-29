@@ -1,2 +1,13 @@
 # AR-Foundation-Framework
 For my university thesis, comparison between two types of approaches to build an application/function: AR Foundation vs only ARCore Native 
+
+# Basic Initial Set-up to start
+1. Create a 3D empty project in Unity Hub
+2. Window > Package Management > Package Manager and then go in Unity Registry and install AR Foundation and Google ARCore.
+3. Edit > Project Settings > XR Plug In Management and enable XR Simulator in Windows and in Android ARCore
+4. Edit > Project Settings > Player in Android delete Vulkan because maybe cause bug in the mobile phone, like black screen.
+5. In the project directory at the bottom, Assets > Settings and add in Mobile Renderer and PC Renderer the comonent "AR Background Renderer Feature"
+6. Delete the current main camera and create with right click > XR > AR Session and XR Origin
+7. Window > XR > AR Foundation > XR Enviroment to create and visualize a simulation of application
+8. Then add what you want in XR Origin (ARManager,...) and if you want add script to manage the behaviour of managers
+9. Create the various build that you want, File > Build Profiles for the various project builds

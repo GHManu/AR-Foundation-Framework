@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.EventSystems; // Fondamentale per rilevare gli eventi del mouse
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
@@ -10,6 +13,11 @@ public class ARSpawnObject : MonoBehaviour
     [Header("Configurazione Prefab")]
     public List<GameObject> spawnable_objects;
     public GameObject object_to_spawn;
+    public Button switch_button;
+
+    private EventTrigger event_trigger;
+    private int current_index;
+    private bool mouse_on_btn;
 
     [Header("Input System Settings")]
     public InputActionReference input_action; // Es. Primary Touch / Press
@@ -25,6 +33,10 @@ public class ARSpawnObject : MonoBehaviour
     private void Awake()
     {
         raycast_manager = GetComponent<ARRaycastManager>();
+        event_trigger = switch_button.gameObject.GetComponent<EventTrigger>();
+        if (event_trigger == null){
+            event_trigger = switch_button.gameObject.AddComponent<EventTrigger>();
+        }
 
         // Se la posizione dello schermo non è configurata nell'Inspector, usiamo la posizione di default del touch/pointer
         if (screen_pos.bindings.Count == 0)
@@ -53,94 +65,116 @@ public class ARSpawnObject : MonoBehaviour
 
     private void Start()
     {
+        mouse_on_btn = false;
+        current_index = 0;
         isDragging = false;
         objects_spawned = new List<GameObject>();
         hit_list = new List<ARRaycastHit>();
+        switch_button.onClick.AddListener(SwitchObjByClick);
+
+        // Configura l'evento di ENTRATA (PointerEnter)
+        EventTrigger.Entry entryEnter = new EventTrigger.Entry();
+        entryEnter.eventID = EventTriggerType.PointerEnter;
+        entryEnter.callback.AddListener((data) => { OnMouseEnter(); });
+        event_trigger.triggers.Add(entryEnter);
+
+        // Configura l'evento di USCITA (PointerExit)
+        EventTrigger.Entry entryExit = new EventTrigger.Entry();
+        entryExit.eventID = EventTriggerType.PointerExit;
+        entryExit.callback.AddListener((data) => { OnMouseExit(); });
+        event_trigger.triggers.Add(entryExit);
+
+
+
     }
 
     private void Update()
     {
-        // Lettura sicura della posizione corrente sullo schermo
-        Vector2 current_input_pos = screen_pos.ReadValue<Vector2>();
-
-        // Fallback per dispositivi mobili se screen_pos non legge correttamente
-        if (current_input_pos == Vector2.zero && Touchscreen.current != null)
+        if (!mouse_on_btn)
         {
-            current_input_pos = Touchscreen.current.primaryTouch.position.ReadValue();
-        }
+            // Lettura sicura della posizione corrente sullo schermo
+            Vector2 current_input_pos = screen_pos.ReadValue<Vector2>();
 
-        // Se non abbiamo un'azione di tocco associata, usiamo un fallback sul Touch/Click generico
-        bool isPressedThisFrame = (input_action != null && input_action.action != null)
-            ? input_action.action.WasPressedThisFrame()
-            : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame);
-
-        bool isPressed = (input_action != null && input_action.action != null)
-            ? input_action.action.IsPressed()
-            : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed);
-
-        bool wasReleased = (input_action != null && input_action.action != null)
-            ? input_action.action.WasReleasedThisFrame()
-            : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasReleasedThisFrame);
-
-        // INIZIO TOCCO
-        if (isPressedThisFrame)
-        {
-            selected_object = null;
-            isDragging = false;
-
-            // Physics Raycast per selezionare oggetti già generati
-            Ray ray = Camera.main.ScreenPointToRay(current_input_pos);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            // Fallback per dispositivi mobili se screen_pos non legge correttamente
+            if (current_input_pos == Vector2.zero && Touchscreen.current != null)
             {
-                if (objects_spawned.Contains(hit.transform.gameObject))
+                current_input_pos = Touchscreen.current.primaryTouch.position.ReadValue();
+            }
+
+            // Se non abbiamo un'azione di tocco associata, usiamo un fallback sul Touch/Click generico
+            bool isPressedThisFrame = (input_action != null && input_action.action != null)
+                ? input_action.action.WasPressedThisFrame()
+                : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame);
+
+            bool isPressed = (input_action != null && input_action.action != null)
+                ? input_action.action.IsPressed()
+                : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed);
+
+            bool wasReleased = (input_action != null && input_action.action != null)
+                ? input_action.action.WasReleasedThisFrame()
+                : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasReleasedThisFrame);
+
+            // INIZIO TOCCO
+            if (isPressedThisFrame)
+            {
+                selected_object = null;
+                isDragging = false;
+
+                // Physics Raycast per selezionare oggetti già generati
+                Ray ray = Camera.main.ScreenPointToRay(current_input_pos);
+                if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    selected_object = hit.transform.gameObject;
-                    isDragging = true;
-                    return;
+                    if (objects_spawned.Contains(hit.transform.gameObject))
+                    {
+                        selected_object = hit.transform.gameObject;
+                        isDragging = true;
+                        return;
+                    }
+                }
+
+                // AR Raycast per selezionare o generare sul piano AR
+                if (raycast_manager.Raycast(current_input_pos, hit_list, TrackableType.PlaneWithinPolygon))
+                {
+                    Pose hit_pose = hit_list[0].pose;
+                    GameObject nearby_object = GetClosestSpawnedObject(hit_pose.position, 0.25f);
+
+                    if (nearby_object != null)
+                    {
+                        selected_object = nearby_object;
+                        isDragging = true;
+                        return;
+                    }
+
+                    TrySpawnObjectAtPose(hit_pose);
                 }
             }
 
-            // AR Raycast per selezionare o generare sul piano AR
-            if (raycast_manager.Raycast(current_input_pos, hit_list, TrackableType.PlaneWithinPolygon))
+            // TRASCINAMENTO (DRAG)
+            if (isDragging && selected_object != null && isPressed)
             {
-                Pose hit_pose = hit_list[0].pose;
-                GameObject nearby_object = GetClosestSpawnedObject(hit_pose.position, 0.25f);
-
-                if (nearby_object != null)
+                if (raycast_manager.Raycast(current_input_pos, hit_list, TrackableType.PlaneWithinPolygon))
                 {
-                    selected_object = nearby_object;
-                    isDragging = true;
-                    return;
-                }
+                    Pose hit_pose = hit_list[0].pose;
 
-                TrySpawnObjectAtPose(hit_pose);
-            }
-        }
+                    selected_object.transform.position = hit_pose.position;
 
-        // TRASCINAMENTO (DRAG)
-        if (isDragging && selected_object != null && isPressed)
-        {
-            if (raycast_manager.Raycast(current_input_pos, hit_list, TrackableType.PlaneWithinPolygon))
-            {
-                Pose hit_pose = hit_list[0].pose;
-
-                selected_object.transform.position = hit_pose.position;
-
-                Vector3 camera_view = Camera.main.transform.position - selected_object.transform.position;
-                camera_view.y = 0f;
-                if (camera_view != Vector3.zero)
-                {
-                    selected_object.transform.rotation = Quaternion.LookRotation(camera_view);
+                    Vector3 camera_view = Camera.main.transform.position - selected_object.transform.position;
+                    camera_view.y = 0f;
+                    if (camera_view != Vector3.zero)
+                    {
+                        selected_object.transform.rotation = Quaternion.LookRotation(camera_view);
+                    }
                 }
             }
-        }
 
-        // RILASCIO (DROP)
-        if (wasReleased || !isPressed)
-        {
-            isDragging = false;
-            selected_object = null;
+            // RILASCIO (DROP)
+            if (wasReleased || !isPressed)
+            {
+                isDragging = false;
+                selected_object = null;
+            }
         }
+       
     }
 
     // Serve per prendere l'elemento più vicino, se c'è, invece di spawnarne un altro, impedisce anche di spawnarli attaccati o uno dentro l'altro o tanti
@@ -203,5 +237,29 @@ public class ARSpawnObject : MonoBehaviour
         }
 
         return to_find;
+    }
+
+    // Serve a cambiare oggetto a runtime
+    private void SwitchObjByClick(){
+        if (current_index < spawnable_objects.Count - 1)
+        {
+            object_to_spawn = spawnable_objects[current_index];
+            current_index++;
+        }
+        else
+        {
+            current_index = 0;
+        }
+        
+    }
+
+    private void OnMouseEnter()
+    {
+        this.mouse_on_btn = true;
+    }
+
+    private void OnMouseExit()
+    {
+        this.mouse_on_btn = false;
     }
 }
