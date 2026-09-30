@@ -1,39 +1,49 @@
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.EventSystems; // Fondamentale per rilevare gli eventi del mouse
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;  
+using UnityEngine.UI;   
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
 [RequireComponent(typeof(ARRaycastManager))]
+[RequireComponent(typeof(ARPlaneManager))]
 public class ARSpawnObject : MonoBehaviour
 {
-    [Header("Configurazione Prefab")]
-    public List<GameObject> spawnable_objects;
-    public GameObject object_to_spawn;
-    public Button switch_button;
+    [Header("Configurazione Prefab")]   //lo scrive nell'inspector e SerializeField lo rende inizializzabile dall'inspector
+    [SerializeField] private List<GameObject> spawnable_objects;    //tipi di oggetti totali da poter spawnare
+    [SerializeField] private GameObject object_to_spawn;    //tipologia di oggetto selezionato da spawnare
+    [SerializeField] private Button switch_button;  //per cambiare tipologia di oggetto
 
-    private EventTrigger event_trigger;
+
+    private EventTrigger event_trigger; //per eventi di sistema
     private int current_index;
     private bool mouse_on_btn;
 
     [Header("Input System Settings")]
-    public InputActionReference input_action; // Es. Primary Touch / Press
-    public InputAction screen_pos;            // Position del Touch
+    [SerializeField] private InputActionReference input_action; // Es. Primary Touch / Press; InputActionReference è l'azione singola
+    [SerializeField] private InputAction screen_pos;            // Posizione del Touch/mouse, InputAction
 
     private bool isDragging;
-    private ARRaycastManager raycast_manager;
-    private List<ARRaycastHit> hit_list;
+    private List<ARRaycastHit> hit_list;    //mi serve per contenere i punti in cui il mio raycast tocca le superfici
     private List<GameObject> objects_spawned;
-
     private GameObject selected_object;
 
+    //Manager
+    private ARRaycastManager raycast_manager;
+    private ARPlaneManager plane_manager;
+
+    //Awake viene eseguito dopo la creazione dell'istanza dello script (cioè dopo la chiamata del costruttore C# e l'allocazione della memoria)
+    //quindi anche dopo l'istanza dei prefab e prima di start.
+    //Se un GameObject è inattivo durante l'avvio, Awake non viene chiamata finché non viene attivato.
     private void Awake()
     {
         raycast_manager = GetComponent<ARRaycastManager>();
+        plane_manager = GetComponent<ARPlaneManager>();
+
         event_trigger = switch_button.gameObject.GetComponent<EventTrigger>();
+
+
         if (event_trigger == null){
             event_trigger = switch_button.gameObject.AddComponent<EventTrigger>();
         }
@@ -46,6 +56,8 @@ public class ARSpawnObject : MonoBehaviour
         screen_pos.Enable();
     }
 
+    //Chiamato solo quando un GameObject è o diventa attivo. Questo accade quando viene creata un'istanza di MonoBehavior,
+    //ad esempio quando viene caricato un livello o viene istanziato un GameObject con il componente script.
     private void OnEnable()
     {
         if (input_action != null && input_action.action != null)
@@ -63,22 +75,25 @@ public class ARSpawnObject : MonoBehaviour
         screen_pos.Disable();
     }
 
+    //Eseguito dopo l'Awake, prima del primo frame
     private void Start()
     {
+        plane_manager.enabled = true;
         mouse_on_btn = false;
         current_index = 0;
         isDragging = false;
         objects_spawned = new List<GameObject>();
         hit_list = new List<ARRaycastHit>();
+
         switch_button.onClick.AddListener(SwitchObjByClick);
 
-        // Configura l'evento di ENTRATA (PointerEnter)
+        // Configura l'evento di ENTRATA nel pulsante (PointerEnter)
         EventTrigger.Entry entryEnter = new EventTrigger.Entry();
         entryEnter.eventID = EventTriggerType.PointerEnter;
         entryEnter.callback.AddListener((data) => { OnMouseEnter(); });
         event_trigger.triggers.Add(entryEnter);
 
-        // Configura l'evento di USCITA (PointerExit)
+        // Configura l'evento di USCITA nel pulsante (PointerExit)
         EventTrigger.Entry entryExit = new EventTrigger.Entry();
         entryExit.eventID = EventTriggerType.PointerExit;
         entryExit.callback.AddListener((data) => { OnMouseExit(); });
@@ -88,6 +103,17 @@ public class ARSpawnObject : MonoBehaviour
 
     }
 
+    private void OnMouseEnter()
+    {
+        this.mouse_on_btn = true;
+    }
+
+    private void OnMouseExit()
+    {
+        this.mouse_on_btn = false;
+    }
+
+    //Eseguito ad ogni frame
     private void Update()
     {
         if (!mouse_on_btn)
@@ -132,7 +158,7 @@ public class ARSpawnObject : MonoBehaviour
                     }
                 }
 
-                // AR Raycast per selezionare o generare sul piano AR
+                // AR Raycast per selezionare o generare oggetti sul piano AR
                 if (raycast_manager.Raycast(current_input_pos, hit_list, TrackableType.PlaneWithinPolygon))
                 {
                     Pose hit_pose = hit_list[0].pose;
@@ -159,7 +185,7 @@ public class ARSpawnObject : MonoBehaviour
                     selected_object.transform.position = hit_pose.position;
 
                     Vector3 camera_view = Camera.main.transform.position - selected_object.transform.position;
-                    camera_view.y = 0f;
+                    //camera_view.y = 0f;
                     if (camera_view != Vector3.zero)
                     {
                         selected_object.transform.rotation = Quaternion.LookRotation(camera_view);
@@ -253,13 +279,5 @@ public class ARSpawnObject : MonoBehaviour
         
     }
 
-    private void OnMouseEnter()
-    {
-        this.mouse_on_btn = true;
-    }
 
-    private void OnMouseExit()
-    {
-        this.mouse_on_btn = false;
-    }
 }

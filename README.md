@@ -1,7 +1,8 @@
 # AR-Foundation-Framework
-For my university thesis, comparison between two types of approaches to build an application/function: AR Foundation vs only ARCore Native 
+For my university thesis, creating an AR App with AR Foundation framework and ARCore XR Plug-in
 
-# Basic Initial Set-up to start
+# How I Did It
+## Basic Initial Set-up to start
 1. Create a 3D empty project in Unity Hub
 2. Window > Package Management > Package Manager and then go in Unity Registry and install AR Foundation and Google ARCore.
 3. Edit > Project Settings > XR Plug In Management and enable XR Simulator in Windows and in Android ARCore
