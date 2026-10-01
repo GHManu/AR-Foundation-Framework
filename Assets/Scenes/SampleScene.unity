@@ -1296,6 +1296,7 @@ GameObject:
   - component: {fileID: 1732534895}
   - component: {fileID: 1732534898}
   - component: {fileID: 1732534899}
+  - component: {fileID: 1732534900}
   m_Layer: 0
   m_Name: XR Origin
   m_TagString: Untagged
@@ -1365,12 +1366,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6b97f1d89fc3ee4fb57554080541dfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ARSpawnObject
-  spawnable_objects:
-  - {fileID: 7722218023679438483, guid: 8aabd5377d9903d44af092179bf9ad0d, type: 3}
-  - {fileID: 1512068136443167644, guid: 1a982cade267de14d996fb117a00b0ee, type: 3}
-  - {fileID: 8053645224362621452, guid: 68aca7169944d984e8e0683ba856657b, type: 3}
-  - {fileID: 2116625974273330849, guid: 13a4eb60b55800d4b8c775256bc95038, type: 3}
-  object_to_spawn: {fileID: 2116625974273330849, guid: 13a4eb60b55800d4b8c775256bc95038, type: 3}
   switch_button: {fileID: 1854996014}
   input_action: {fileID: 8163402432142045616, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   screen_pos:
@@ -1414,7 +1409,19 @@ MonoBehaviour:
   <trackablesChanged>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
-  m_RaycastPrefab: {fileID: 2116625974273330849, guid: 13a4eb60b55800d4b8c775256bc95038, type: 3}
+  m_RaycastPrefab: {fileID: 0}
+--- !u!114 &1732534900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732534894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0317e93701c97846829e426201857c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LoadPrefabs
 --- !u!1 &1854996012
 GameObject:
   m_ObjectHideFlags: 0
