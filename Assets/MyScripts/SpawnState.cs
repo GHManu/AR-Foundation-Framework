@@ -1,34 +1,28 @@
 using UnityEngine;
-using UnityEngine.XR.ARSubsystems;
 
 public class SpawnState : IObjectInteractionState
 {
-    public void EnterState(ARMainApplication context, GameObject obj) { }
-
-    public void UpdateState(ARMainApplication context, GameObject obj)
+    public void EnterState(ARMainApplication context, GameObject obj)
     {
-        Vector2 inputPos = context.GetInputPosition();
-
-        if (context.Raycast_Manager.Raycast(inputPos, context.Hit_List, TrackableType.PlaneWithinPolygon))
+        if (context.Object_Factory != null && context.Hit_List.Count > 0)
         {
-            Pose hitPose = context.Hit_List[0].pose;
+            Pose hit_pose = context.Hit_List[0].pose;
+            SpawnContext spawn_context = new SpawnContext(
+                hit_pose,
+                context.Object_To_Spawn,
+                context.Objects_Spawned,
+                context.Load_Prefabs.Spawnable_Objects,
+                context.Main_Camera
+            );
 
-            SpawnContext spawn_context = new SpawnContext(hitPose, context.Object_To_Spawn,
-                context.Objects_Spawned, context.Load_Prefabs.Spawnable_Objects, context.Main_Camera);
-
-            GameObject spawnedObj = context.Object_Factory.SpawnObject(spawn_context);
-
-            if (spawnedObj != null)
-            {
-                // Inizia subito il dragging del nuovo oggetto
-                context.ChangeState(new DragState(), spawnedObj);
-                return;
-            }
+            // Invece di chiamare direttamente lo Spawn, incapsuliamo nel Command
+            ICommand spawn_cmd = new SpawnObjectCommand(context.Object_Factory, spawn_context, context);
+            context.ExecuteCommand(spawn_cmd);
         }
 
-        // Se non spetta/fallisce, torna in Idle
         context.ChangeState(new IdleState(), null);
     }
 
+    public void UpdateState(ARMainApplication context, GameObject obj) { }
     public void ExitState(ARMainApplication context, GameObject obj) { }
 }

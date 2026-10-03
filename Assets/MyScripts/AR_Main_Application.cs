@@ -1,19 +1,25 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 
 [RequireComponent(typeof(ARRaycastManager))]
 [RequireComponent(typeof(ARPlaneManager))]
 public class ARMainApplication : MonoBehaviour
 {
+    // EVENTI OBSERVER
+    public event Action<GameObject> OnSelectedObjectChanged;
+    public event Action<bool> OnDraggingStateChanged;
+    public event Action<GameObject> OnObjectToSpawnChanged;
+    public event Action<GameObject> OnObjectSpawned;
+
     [Header("Configurazione Prefab")]
     private LoadPrefabs load_prefabs;
     public LoadPrefabs Load_Prefabs
     {
-        get => load_prefabs;    //è uguale a fare get{ return load_prefabs;}
+        get => load_prefabs;
         set => load_prefabs = value;
     }
 
@@ -21,7 +27,39 @@ public class ARMainApplication : MonoBehaviour
     public GameObject Object_To_Spawn
     {
         get => object_to_spawn;
-        set => object_to_spawn = value;
+        set
+        {
+            object_to_spawn = value;
+            OnObjectToSpawnChanged?.Invoke(object_to_spawn); // Notifica Observer
+        }
+    }
+
+    private bool is_dragging;
+    public bool Is_Dragging
+    {
+        get => is_dragging;
+        set
+        {
+            if (is_dragging != value)
+            {
+                is_dragging = value;
+                OnDraggingStateChanged?.Invoke(is_dragging); // Notifica Observer
+            }
+        }
+    }
+
+    private GameObject selected_object;
+    public GameObject Selected_Object
+    {
+        get => selected_object;
+        set
+        {
+            if (selected_object != value)
+            {
+                selected_object = value;
+                OnSelectedObjectChanged?.Invoke(selected_object); // Notifica Observer
+            }
+        }
     }
 
     [Header("Configurazione Input")]
@@ -39,15 +77,14 @@ public class ARMainApplication : MonoBehaviour
         set => screen_pos = value;
     }
 
-    public bool Is_Dragging { get; set; }
     public List<ARRaycastHit> Hit_List { get; set; }
     public List<GameObject> Objects_Spawned { get; set; }
-    public GameObject Selected_Object { get; set; }
     public int Current_Index { get; set; }
 
     public ARRaycastManager Raycast_Manager { get; set; }
     public ARPlaneManager Plane_Manager { get; set; }
     public Camera Main_Camera { get; set; }
+
     private ASpawnObjectFactory object_factory;
     public ASpawnObjectFactory Object_Factory
     {
@@ -56,6 +93,24 @@ public class ARMainApplication : MonoBehaviour
     }
 
     private IObjectInteractionState current_state;
+
+    // GESTIONE COMMAND PATTERN (per Undo/Redo)
+    private readonly Stack<ICommand> command_history = new Stack<ICommand>();
+
+    public void ExecuteCommand(ICommand command)
+    {
+        command.Execute();
+        command_history.Push(command);
+    }
+
+    public void UndoLastCommand()
+    {
+        if (command_history.Count > 0)
+        {
+            ICommand cmd = command_history.Pop();
+            cmd.Undo();
+        }
+    }
 
     private void Awake()
     {
@@ -107,9 +162,7 @@ public class ARMainApplication : MonoBehaviour
         Objects_Spawned = new List<GameObject>();
         Hit_List = new List<ARRaycastHit>();
 
-        
         ChangeState(new IdleState(), null);
-
 
         Object_Factory = new GeometricShapesFactory();
     }
@@ -121,11 +174,17 @@ public class ARMainApplication : MonoBehaviour
             current_state.UpdateState(this, Selected_Object);
         }
     }
+
     public void ChangeState(IObjectInteractionState newState, GameObject targetObj)
     {
-        current_state?.ExitState(this, targetObj);  //?. è l'operatore condizionale nullo (noto anche come null-conditional operator) e serve a chiamare un metodo o una funzione solo se l'oggetto o il delegato a sinistra non è nullo
+        current_state?.ExitState(this, targetObj);
         current_state = newState;
         current_state?.EnterState(this, targetObj);
+    }
+
+    public void NotifyObjectSpawned(GameObject spawnedObj)
+    {
+        OnObjectSpawned?.Invoke(spawnedObj);
     }
 
     // HELPER INPUT
@@ -160,7 +219,6 @@ public class ARMainApplication : MonoBehaviour
             : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasReleasedThisFrame);
     }
 
-    // Metodo universale per rilevare touch o mouse su UI sia su Editor che Mobile
     public bool IsPointerOverUI()
     {
         if (EventSystem.current == null) return false;
@@ -171,6 +229,4 @@ public class ARMainApplication : MonoBehaviour
         }
         return EventSystem.current.IsPointerOverGameObject();
     }
-
-    
 }

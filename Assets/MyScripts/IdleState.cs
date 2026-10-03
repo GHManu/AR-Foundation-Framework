@@ -30,12 +30,12 @@ public class IdleState : IObjectInteractionState
             // Se tocca il piano AR, seleziona l'oggetto più vicino o spawna
             if (context.Raycast_Manager.Raycast(inputPos, context.Hit_List, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon))
             {
-                Pose hitPose = context.Hit_List[0].pose;
-                GameObject nearbyObj = GetClosestSpawnedObject(hitPose.position, 0.25f, context.Objects_Spawned);
+                Pose hit_pose = context.Hit_List[0].pose;
+                GameObject nearby_obj = GetClosestSpawnedObject(hit_pose.position, 0.25f, context.Objects_Spawned);
 
-                if (nearbyObj != null)
+                if (nearby_obj != null)
                 {
-                    context.ChangeState(new DragState(), nearbyObj);
+                    context.ChangeState(new DragState(), nearby_obj);
                 }
                 else
                 {

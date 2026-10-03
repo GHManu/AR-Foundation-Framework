@@ -12,6 +12,22 @@ public class UIScrollListManager : MonoBehaviour
     [SerializeField] private LoadPrefabs load_prefabs;
     [SerializeField] private ARMainApplication ar_app;
 
+    private void OnEnable()
+    {
+        if (ar_app != null)
+        {
+            ar_app.OnObjectToSpawnChanged += HandleObjectToSpawnChanged;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (ar_app != null)
+        {
+            ar_app.OnObjectToSpawnChanged -= HandleObjectToSpawnChanged;
+        }
+    }
+
     private void Start()
     {
         GenerateList();
@@ -32,7 +48,6 @@ public class UIScrollListManager : MonoBehaviour
             TMP_Text tmpText = newButton.GetComponentInChildren<TMP_Text>();
             if (tmpText != null) tmpText.text = prefab.name;
 
-            // Aggancia il Listener di selezione
             Button btn = newButton.GetComponent<Button>();
             if (btn != null)
             {
@@ -42,10 +57,17 @@ public class UIScrollListManager : MonoBehaviour
                     if (ar_app != null)
                     {
                         ar_app.Object_To_Spawn = currentPrefab;
-                        Debug.Log($"[UI] Selezionato oggetto AR: {currentPrefab.name}");
                     }
                 });
             }
+        }
+    }
+
+    private void HandleObjectToSpawnChanged(GameObject newPrefab)
+    {
+        if (newPrefab != null)
+        {
+            Debug.Log($"[UI Observer] Oggetto da spawnare aggiornato: {newPrefab.name}");
         }
     }
 }
