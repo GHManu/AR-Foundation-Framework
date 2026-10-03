@@ -1,14 +1,16 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class IdleState : IObjectInteractionState
 {
-    public void EnterState(ARSpawnObject context, GameObject obj)
+    public void EnterState(ARMainApplication context, GameObject obj)
     {
         context.Selected_Object = null;
         context.Is_Dragging = false;
     }
 
-    public void UpdateState(ARSpawnObject context, GameObject obj)
+    public void UpdateState(ARMainApplication context, GameObject obj)
     {
         Vector2 inputPos = context.GetInputPosition();
 
@@ -29,7 +31,7 @@ public class IdleState : IObjectInteractionState
             if (context.Raycast_Manager.Raycast(inputPos, context.Hit_List, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon))
             {
                 Pose hitPose = context.Hit_List[0].pose;
-                GameObject nearbyObj = context.GetClosestSpawnedObject(hitPose.position, 0.25f);
+                GameObject nearbyObj = GetClosestSpawnedObject(hitPose.position, 0.25f, context.Objects_Spawned);
 
                 if (nearbyObj != null)
                 {
@@ -43,5 +45,24 @@ public class IdleState : IObjectInteractionState
         }
     }
 
-    public void ExitState(ARSpawnObject context, GameObject obj) { }
+    public void ExitState(ARMainApplication context, GameObject obj) { }
+
+    private GameObject GetClosestSpawnedObject(Vector3 hit_position, float max_distance, List<GameObject> objects_spawned)
+    {
+        GameObject closest = null;
+        float min_dist = max_distance;
+
+        foreach (GameObject obj in objects_spawned)
+        {
+            if (obj == null) continue;
+            float dist = Vector3.Distance(obj.transform.position, hit_position);
+            if (dist < min_dist)
+            {
+                min_dist = dist;
+                closest = obj;
+            }
+        }
+        return closest;
+    }
+
 }

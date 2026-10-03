@@ -3,13 +3,13 @@ using UnityEngine.XR.ARSubsystems;
 
 public class DragState : IObjectInteractionState
 {
-    public void EnterState(ARSpawnObject context, GameObject obj)
+    public void EnterState(ARMainApplication context, GameObject obj)
     {
         context.Selected_Object = obj;
         context.Is_Dragging = true;
     }
 
-    public void UpdateState(ARSpawnObject context, GameObject obj)
+    public void UpdateState(ARMainApplication context, GameObject obj)
     {
         // Se il giocatore rilascia il tocco, rilascia l'oggetto
         if (context.WasReleasedThisFrame() || !context.IsPressed())
@@ -35,5 +35,5 @@ public class DragState : IObjectInteractionState
         }
     }
 
-    public void ExitState(ARSpawnObject context, GameObject obj) { }
+    public void ExitState(ARMainApplication context, GameObject obj) { }
 }

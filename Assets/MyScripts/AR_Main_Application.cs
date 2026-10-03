@@ -7,7 +7,7 @@ using UnityEngine.XR.ARFoundation;
 
 [RequireComponent(typeof(ARRaycastManager))]
 [RequireComponent(typeof(ARPlaneManager))]
-public class ARSpawnObject : MonoBehaviour
+public class ARMainApplication : MonoBehaviour
 {
     [Header("Configurazione Prefab")]
     private LoadPrefabs load_prefabs;
@@ -22,13 +22,6 @@ public class ARSpawnObject : MonoBehaviour
     {
         get => object_to_spawn;
         set => object_to_spawn = value;
-    }
-
-    [SerializeField] private Button switch_button;
-    public Button Switch_Button
-    {
-        get => switch_button;
-        set => switch_button = value;
     }
 
     [Header("Configurazione Input")]
@@ -50,13 +43,17 @@ public class ARSpawnObject : MonoBehaviour
     public List<ARRaycastHit> Hit_List { get; set; }
     public List<GameObject> Objects_Spawned { get; set; }
     public GameObject Selected_Object { get; set; }
-    public EventTrigger Event_Trigger { get; set; }
     public int Current_Index { get; set; }
-    public bool Mouse_On_Btn { get; set; }
 
     public ARRaycastManager Raycast_Manager { get; set; }
     public ARPlaneManager Plane_Manager { get; set; }
     public Camera Main_Camera { get; set; }
+    private ASpawnObjectFactory object_factory;
+    public ASpawnObjectFactory Object_Factory
+    {
+        get => object_factory;
+        set => object_factory = value;
+    }
 
     private IObjectInteractionState current_state;
 
@@ -65,13 +62,8 @@ public class ARSpawnObject : MonoBehaviour
         Load_Prefabs = GetComponent<LoadPrefabs>();
         Raycast_Manager = GetComponent<ARRaycastManager>();
         Plane_Manager = GetComponent<ARPlaneManager>();
-        Event_Trigger = Switch_Button.GetComponent<EventTrigger>();
-        Main_Camera = Camera.main;
 
-        if (Event_Trigger == null)
-        {
-            Event_Trigger = Switch_Button.gameObject.AddComponent<EventTrigger>();
-        }
+        Main_Camera = Camera.main;
 
         if (Screen_Pos.bindings.Count == 0)
         {
@@ -99,38 +91,39 @@ public class ARSpawnObject : MonoBehaviour
 
     private void Start()
     {
-        Object_To_Spawn = Load_Prefabs.Spawnable_Objects[0];
         Plane_Manager.enabled = true;
-        Mouse_On_Btn = false;
         Current_Index = 0;
+
+        if (Load_Prefabs != null && Load_Prefabs.Spawnable_Objects != null && Load_Prefabs.Spawnable_Objects.Count > 0)
+        {
+            Object_To_Spawn = Load_Prefabs.Spawnable_Objects[Current_Index];
+        }
+        else
+        {
+            Debug.LogError("Spawnable_Objects è vuoto o non assegnato in LoadPrefabs!");
+        }
+
         Is_Dragging = false;
         Objects_Spawned = new List<GameObject>();
         Hit_List = new List<ARRaycastHit>();
 
-        Switch_Button.onClick.AddListener(SwitchObjByClick);
-
-        EventTrigger.Entry entryEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-        entryEnter.callback.AddListener((data) => { Mouse_On_Btn = true; });
-        Event_Trigger.triggers.Add(entryEnter);
-
-        EventTrigger.Entry entryExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-        entryExit.callback.AddListener((data) => { Mouse_On_Btn = false; });
-        Event_Trigger.triggers.Add(entryExit);
-
-        // Imposta lo stato iniziale
+        
         ChangeState(new IdleState(), null);
+
+
+        Object_Factory = new GeometricShapesFactory();
     }
 
     private void Update()
     {
-        if (!Mouse_On_Btn && current_state != null)
+        if (!IsPointerOverUI() && current_state != null)
         {
             current_state.UpdateState(this, Selected_Object);
         }
     }
     public void ChangeState(IObjectInteractionState newState, GameObject targetObj)
     {
-        current_state?.ExitState(this, targetObj);
+        current_state?.ExitState(this, targetObj);  //?. è l'operatore condizionale nullo (noto anche come null-conditional operator) e serve a chiamare un metodo o una funzione solo se l'oggetto o il delegato a sinistra non è nullo
         current_state = newState;
         current_state?.EnterState(this, targetObj);
     }
@@ -167,76 +160,17 @@ public class ARSpawnObject : MonoBehaviour
             : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasReleasedThisFrame);
     }
 
-    public GameObject GetClosestSpawnedObject(Vector3 hit_position, float max_distance)
+    // Metodo universale per rilevare touch o mouse su UI sia su Editor che Mobile
+    public bool IsPointerOverUI()
     {
-        GameObject closest = null;
-        float min_dist = max_distance;
+        if (EventSystem.current == null) return false;
 
-        foreach (GameObject obj in Objects_Spawned)
+        if (Input.touchCount > 0)
         {
-            if (obj == null) continue;
-            float dist = Vector3.Distance(obj.transform.position, hit_position);
-            if (dist < min_dist)
-            {
-                min_dist = dist;
-                closest = obj;
-            }
+            return EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
         }
-        return closest;
+        return EventSystem.current.IsPointerOverGameObject();
     }
 
-    public GameObject TrySpawnObjectAtPose(Pose hit_pose)
-    {
-        GameObject prefab_to_spawn = ChoosePrefabToSpawn(Load_Prefabs.Spawnable_Objects, Object_To_Spawn);
-        if (prefab_to_spawn != null)
-        {
-            GameObject prefab_spawned = Instantiate(prefab_to_spawn, hit_pose.position, hit_pose.rotation);
-
-            Vector3 camera_view = Main_Camera.transform.position - prefab_spawned.transform.position;
-            camera_view.y = 0f;
-            if (camera_view != Vector3.zero)
-            {
-                prefab_spawned.transform.rotation = Quaternion.LookRotation(camera_view);
-            }
-
-            if (prefab_spawned.GetComponent<Collider>() == null)
-            {
-                prefab_spawned.AddComponent<BoxCollider>();
-            }
-
-            Objects_Spawned.Add(prefab_spawned);
-            return prefab_spawned;
-        }
-        return null;
-    }
-
-    public GameObject ChoosePrefabToSpawn(List<GameObject> list, GameObject to_find)
-    {
-        if (to_find == null) return null;
-
-        if (list != null)
-        {
-            foreach (GameObject obj in list)
-            {
-                if (obj != null && obj.name.Contains(to_find.name))
-                {
-                    return obj;
-                }
-            }
-        }
-        return to_find;
-    }
-
-    private void SwitchObjByClick()
-    {
-        if (Current_Index < Load_Prefabs.Spawnable_Objects.Count - 1)
-        {
-            Current_Index++;
-        }
-        else
-        {
-            Current_Index = 0;
-        }
-        Object_To_Spawn = Load_Prefabs.Spawnable_Objects[Current_Index];
-    }
+    
 }
