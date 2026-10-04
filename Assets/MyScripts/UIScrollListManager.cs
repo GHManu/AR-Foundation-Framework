@@ -16,7 +16,7 @@ public class UIScrollListManager : MonoBehaviour
     {
         if (ar_app != null)
         {
-            ar_app.OnObjectToSpawnChanged += HandleObjectToSpawnChanged;
+            ar_app.On_object_to_spawn_changed += HandleObjectToSpawnChanged;
         }
     }
 
@@ -24,7 +24,7 @@ public class UIScrollListManager : MonoBehaviour
     {
         if (ar_app != null)
         {
-            ar_app.OnObjectToSpawnChanged -= HandleObjectToSpawnChanged;
+            ar_app.On_object_to_spawn_changed -= HandleObjectToSpawnChanged;
         }
     }
 

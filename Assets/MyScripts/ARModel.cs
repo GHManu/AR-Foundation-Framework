@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ARModel
 {
-    // Eventi Observer
-    public event Action<GameObject> OnObjectSpawned;
-    public event Action<GameObject> OnObjectSelected;
-    public event Action<bool> OnDraggingStateChanged;
+    // Eventi Observer, obbligatoriamente i nomi devono iniziare con la lettera maiuscola
+    public event Action<GameObject> On_object_spawned;
+    public event Action<GameObject> On_object_selected;
+    public event Action<bool> On_dragging_state_changed;
 
     public List<GameObject> Spawned_Objects { get; private set; } = new List<GameObject>();
 
@@ -18,7 +18,7 @@ public class ARModel
         set
         {
             selected_object = value;
-            OnObjectSelected?.Invoke(selected_object);
+            On_object_selected?.Invoke(selected_object);
         }
     }
 
@@ -29,13 +29,13 @@ public class ARModel
         set
         {
             isDragging = value;
-            OnDraggingStateChanged?.Invoke(isDragging);
+            On_dragging_state_changed?.Invoke(isDragging);
         }
     }
 
     public void AddObject(GameObject obj)
     {
         Spawned_Objects.Add(obj);
-        OnObjectSpawned?.Invoke(obj);
+        On_object_spawned?.Invoke(obj);
     }
 }

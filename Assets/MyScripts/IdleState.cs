@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,12 +5,16 @@ public class IdleState : IObjectInteractionState
 {
     public void EnterState(ARMainApplication context, GameObject obj)
     {
-        context.Selected_Object = null;
+        if(obj != null)
+            context.Selected_Object = obj;
         context.Is_Dragging = false;
     }
 
     public void UpdateState(ARMainApplication context, GameObject obj)
     {
+        // Rimuove eventuali riferimenti null dalla lista oggetti spawner
+        context.Objects_Spawned.RemoveAll(item => item == null);
+
         Vector2 inputPos = context.GetInputPosition();
 
         if (context.IsPressedThisFrame())

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,13 +8,14 @@ using UnityEngine.XR.ARFoundation;
 
 [RequireComponent(typeof(ARRaycastManager))]
 [RequireComponent(typeof(ARPlaneManager))]
+[RequireComponent(typeof(ARPointCloud))]
 public class ARMainApplication : MonoBehaviour
 {
     // EVENTI OBSERVER
-    public event Action<GameObject> OnSelectedObjectChanged;
-    public event Action<bool> OnDraggingStateChanged;
-    public event Action<GameObject> OnObjectToSpawnChanged;
-    public event Action<GameObject> OnObjectSpawned;
+    public event Action<GameObject> On_selected_object_changed;
+    public event Action<bool> On_dragging_state_changed;
+    public event Action<GameObject> On_object_to_spawn_changed;
+    public event Action<GameObject> On_object_spawned;
 
     [Header("Configurazione Prefab")]
     private LoadPrefabs load_prefabs;
@@ -30,7 +32,7 @@ public class ARMainApplication : MonoBehaviour
         set
         {
             object_to_spawn = value;
-            OnObjectToSpawnChanged?.Invoke(object_to_spawn); // Notifica Observer
+            On_object_to_spawn_changed?.Invoke(object_to_spawn); // Notifica Observer
         }
     }
 
@@ -43,7 +45,7 @@ public class ARMainApplication : MonoBehaviour
             if (is_dragging != value)
             {
                 is_dragging = value;
-                OnDraggingStateChanged?.Invoke(is_dragging); // Notifica Observer
+                On_dragging_state_changed?.Invoke(is_dragging); // Notifica Observer
             }
         }
     }
@@ -57,7 +59,7 @@ public class ARMainApplication : MonoBehaviour
             if (selected_object != value)
             {
                 selected_object = value;
-                OnSelectedObjectChanged?.Invoke(selected_object); // Notifica Observer
+                On_selected_object_changed?.Invoke(selected_object); // Notifica Observer
             }
         }
     }
@@ -79,10 +81,16 @@ public class ARMainApplication : MonoBehaviour
 
     public List<ARRaycastHit> Hit_List { get; set; }
     public List<GameObject> Objects_Spawned { get; set; }
+
     public int Current_Index { get; set; }
 
     public ARRaycastManager Raycast_Manager { get; set; }
     public ARPlaneManager Plane_Manager { get; set; }
+    public ARPointCloudManager Point_Cloud_Manager { get; set; } 
+
+    public CustomPlaneManager Custom_Plane_Manager { get; private set; } 
+    public CustomPointCloudManager Custom_Point_Cloud_Manager { get; private set; } 
+
     public Camera Main_Camera { get; set; }
 
     private ASpawnObjectFactory object_factory;
@@ -95,20 +103,37 @@ public class ARMainApplication : MonoBehaviour
     private IObjectInteractionState current_state;
 
     // GESTIONE COMMAND PATTERN (per Undo/Redo)
-    private readonly Stack<ICommand> command_history = new Stack<ICommand>();
+    public CommandHistory Command_History { get; private set; } = new CommandHistory(maxCapacity: 10);
 
     public void ExecuteCommand(ICommand command)
     {
         command.Execute();
-        command_history.Push(command);
+        Command_History.Push(command);
     }
 
     public void UndoLastCommand()
     {
-        if (command_history.Count > 0)
+        while (Command_History.Count > 0)
         {
-            ICommand cmd = command_history.Pop();
-            cmd.Undo();
+            ICommand cmd = Command_History.Pop();
+
+            if (cmd != null)
+            {
+                // Se è un DeleteObjectCommand ma l'oggetto è stato distrutto (timer scaduto o null)
+                if (cmd is DeleteObjectCommand deleteCmd)
+                {
+                    if (deleteCmd.IsDestroyed)
+                    {
+                        // L'oggetto è stato eliminato definitivamente dal timer,
+                        // scartiamo questo Undo e continuiamo il ciclo per trovare un'azione valida!
+                        continue;
+                    }
+                }
+
+                // Esegue l'Undo del comando valido e interrompe il ciclo
+                cmd.Undo();
+                break;
+            }
         }
     }
 
@@ -117,6 +142,10 @@ public class ARMainApplication : MonoBehaviour
         Load_Prefabs = GetComponent<LoadPrefabs>();
         Raycast_Manager = GetComponent<ARRaycastManager>();
         Plane_Manager = GetComponent<ARPlaneManager>();
+        Point_Cloud_Manager = GetComponent<ARPointCloudManager>();
+
+        Custom_Plane_Manager = GetComponent<CustomPlaneManager>();
+        Custom_Point_Cloud_Manager = GetComponent<CustomPointCloudManager>();
 
         Main_Camera = Camera.main;
 
@@ -184,7 +213,7 @@ public class ARMainApplication : MonoBehaviour
 
     public void NotifyObjectSpawned(GameObject spawnedObj)
     {
-        OnObjectSpawned?.Invoke(spawnedObj);
+        On_object_spawned?.Invoke(spawnedObj);
     }
 
     // HELPER INPUT
@@ -229,4 +258,17 @@ public class ARMainApplication : MonoBehaviour
         }
         return EventSystem.current.IsPointerOverGameObject();
     }
+
+    // Metodo helper per avviare timer da classi non-MonoBehaviour (es. ICommand)
+    public Coroutine StartTimer(float delay, Action onComplete)
+    {
+        return StartCoroutine(TimerCoroutine(delay, onComplete));
+    }
+
+    private IEnumerator TimerCoroutine(float delay, Action onComplete)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        onComplete?.Invoke();
+    }
+
 }

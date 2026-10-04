@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
 public class DragState : IObjectInteractionState
@@ -16,6 +17,8 @@ public class DragState : IObjectInteractionState
             initial_position = obj.transform.position;
             initial_rotation = obj.transform.rotation;
         }
+        // Attiva lo stato "Drag" visivo per i punti di tracciamento
+        context.Custom_Point_Cloud_Manager?.SetPointCloudActiveState(true);
     }
 
     public void UpdateState(ARMainApplication context, GameObject obj)
@@ -39,11 +42,23 @@ public class DragState : IObjectInteractionState
             //{
             //    context.Selected_Object.transform.rotation = Quaternion.LookRotation(cameraView);
             //}
+
+            // Evidenzia il piano su cui si sta trascinando l'oggetto
+            ARRaycastHit hit = context.Hit_List[0];
+            ARPlane plane = context.Plane_Manager.GetPlane(hit.trackableId);
+            if (plane != null)
+            {
+                context.Custom_Plane_Manager?.HighlightPlane(plane);
+            }
         }
     }
 
     public void ExitState(ARMainApplication context, GameObject obj)
     {
+        // Pulisce gli evidenziatori visivi
+        context.Custom_Plane_Manager?.ClearHighlight();
+        context.Custom_Point_Cloud_Manager?.SetPointCloudActiveState(false);
+
         // Se l'oggetto si è effettivamente mosso, registra il comando per l'Undo
         if (obj != null && (initial_position != obj.transform.position || initial_rotation != obj.transform.rotation))
         {
