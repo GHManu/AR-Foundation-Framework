@@ -1,5 +1,5 @@
 # AR-Foundation-Framework
-For my university thesis, creating an AR App with AR Foundation framework with ARCore XR Plug-in installed and activated; it also works for iPhone, just install and activate the plugin
+For my university thesis, creating an AR App with AR Foundation framework in Unity with ARCore XR Plug-in installed and activated; it also works for iPhone, just install and activate the plugin
 
 # How I Did It
 ## Basic Initial Set-up to start
