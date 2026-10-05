@@ -2659,7 +2659,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_PlanePrefab: {fileID: 5233427341990433876, guid: e2874e6ae3b10504ab72478c1a3ed06b, type: 3}
-  m_DetectionMode: -1
+  m_DetectionMode: 1
 --- !u!114 &1732534896
 MonoBehaviour:
   m_ObjectHideFlags: 0

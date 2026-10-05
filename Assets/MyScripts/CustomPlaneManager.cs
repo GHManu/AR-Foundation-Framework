@@ -74,12 +74,13 @@ public class CustomPlaneManager : MonoBehaviour
     private void ApplyDefaultPlaneColor(ARPlane plane)
     {
         if (plane == null) return;
-
+        //questa struttura, switch expression, mi permette di assegnare un valore ad alignment a seconda di condizioni a sx di =>
+        // è uno switch compatto
         Color targetColor = plane.alignment switch
         {
             PlaneAlignment.HorizontalUp or PlaneAlignment.HorizontalDown => horizontalColor,
             PlaneAlignment.Vertical => verticalColor,
-            _ => defaultColor
+            _ => defaultColor   //_ è come il default dello switch
         };
 
         SetPlaneColor(plane, targetColor);
@@ -87,6 +88,9 @@ public class CustomPlaneManager : MonoBehaviour
 
     private void SetPlaneColor(ARPlane plane, Color color)
     {
+        //?? --> Operatore Null-Coalescing che controlla se l'espressione alla sua sinistra restituisce null
+        // se plane.GetComponent<Renderer>() non è null, allora ignora la parte destra e continua con quella sx,
+        // se invece è null esegue la parte dx che cerca il componente nei figli
         Renderer renderer = plane.GetComponent<Renderer>() ?? plane.GetComponentInChildren<Renderer>();
         if (renderer != null && renderer.material != null)
         {
