@@ -66,18 +66,8 @@ public class ARMainApplication : MonoBehaviour
 
     [Header("Configurazione Input")]
     [SerializeField] private InputActionReference input_action;
-    public InputActionReference Input_Action
-    {
-        get => input_action;
-        set => input_action = value;
-    }
-
     [SerializeField] private InputAction screen_pos;
-    public InputAction Screen_Pos
-    {
-        get => screen_pos;
-        set => screen_pos = value;
-    }
+    public InputManager input_manager;
 
     public List<ARRaycastHit> Hit_List { get; set; }
     public List<GameObject> Objects_Spawned { get; set; }
@@ -125,7 +115,7 @@ public class ARMainApplication : MonoBehaviour
                     if (deleteCmd.IsDestroyed)
                     {
                         // L'oggetto è stato eliminato definitivamente dal timer,
-                        // scartiamo questo Undo e continuiamo il ciclo per trovare un'azione valida!
+                        // scartiamo questo Undo e continuiamo il ciclo per trovare un'azione valida
                         continue;
                     }
                 }
@@ -149,29 +139,11 @@ public class ARMainApplication : MonoBehaviour
 
         Main_Camera = Camera.main;
 
-        if (Screen_Pos.bindings.Count == 0)
-        {
-            Screen_Pos = new InputAction("TouchPos", binding: "<Pointer>/position");
-        }
-        Screen_Pos.Enable();
+        input_manager = new InputManager(input_action, screen_pos);
+        
     }
 
-    private void OnEnable()
-    {
-        if (Input_Action != null && Input_Action.action != null)
-        {
-            Input_Action.action.Enable();
-        }
-    }
-
-    private void OnDisable()
-    {
-        if (Input_Action != null && Input_Action.action != null)
-        {
-            Input_Action.action.Disable();
-        }
-        Screen_Pos.Disable();
-    }
+    
 
     private void Start()
     {
@@ -198,7 +170,7 @@ public class ARMainApplication : MonoBehaviour
 
     private void Update()
     {
-        if (!IsPointerOverUI() && current_state != null)
+        if (!input_manager.IsPointerOverUI() && current_state != null)
         {
             current_state.UpdateState(this, Selected_Object);
         }
@@ -214,49 +186,6 @@ public class ARMainApplication : MonoBehaviour
     public void NotifyObjectSpawned(GameObject spawnedObj)
     {
         On_object_spawned?.Invoke(spawnedObj);
-    }
-
-    // HELPER INPUT
-    public Vector2 GetInputPosition()
-    {
-        Vector2 pos = Screen_Pos.ReadValue<Vector2>();
-        if (pos == Vector2.zero && Touchscreen.current != null)
-        {
-            pos = Touchscreen.current.primaryTouch.position.ReadValue();
-        }
-        return pos;
-    }
-
-    public bool IsPressedThisFrame()
-    {
-        return (Input_Action != null && Input_Action.action != null)
-            ? Input_Action.action.WasPressedThisFrame()
-            : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame);
-    }
-
-    public bool IsPressed()
-    {
-        return (Input_Action != null && Input_Action.action != null)
-            ? Input_Action.action.IsPressed()
-            : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed);
-    }
-
-    public bool WasReleasedThisFrame()
-    {
-        return (Input_Action != null && Input_Action.action != null)
-            ? Input_Action.action.WasReleasedThisFrame()
-            : (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasReleasedThisFrame);
-    }
-
-    public bool IsPointerOverUI()
-    {
-        if (EventSystem.current == null) return false;
-
-        if (Input.touchCount > 0)
-        {
-            return EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
-        }
-        return EventSystem.current.IsPointerOverGameObject();
     }
 
     // Metodo helper per avviare timer da classi non-MonoBehaviour (es. ICommand)

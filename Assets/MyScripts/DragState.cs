@@ -23,13 +23,13 @@ public class DragState : IObjectInteractionState
 
     public void UpdateState(ARMainApplication context, GameObject obj)
     {
-        if (context.WasReleasedThisFrame() || !context.IsPressed())
+        if (context.input_manager.WasReleasedThisFrame() || !context.input_manager.IsPressed())
         {
             context.ChangeState(new DropState(), context.Selected_Object);
             return;
         }
 
-        Vector2 inputPos = context.GetInputPosition();
+        Vector2 inputPos = context.input_manager.GetInputPosition();
 
         if (context.Raycast_Manager.Raycast(inputPos, context.Hit_List, TrackableType.PlaneWithinPolygon))
         {

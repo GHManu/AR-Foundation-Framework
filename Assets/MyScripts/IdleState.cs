@@ -15,9 +15,9 @@ public class IdleState : IObjectInteractionState
         // Rimuove eventuali riferimenti null dalla lista oggetti spawner
         context.Objects_Spawned.RemoveAll(item => item == null);
 
-        Vector2 inputPos = context.GetInputPosition();
+        Vector2 inputPos = context.input_manager.GetInputPosition();
 
-        if (context.IsPressedThisFrame())
+        if (context.input_manager.IsPressedThisFrame())
         {
             // Prova a selezionare un oggetto tramite Raycast fisico
             Ray ray = context.Main_Camera.ScreenPointToRay(inputPos);
