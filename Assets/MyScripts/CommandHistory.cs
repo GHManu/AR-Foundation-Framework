@@ -38,6 +38,9 @@ public class CommandHistory
         return lastCommand;
     }
 
+    public int Count => history.Count;
+
+    //Serve in DeleteObjectCommand, poichè l'oggetto selezionato può essere diverso dall'ultimo messo
     public bool RemoveCommand(ICommand command)
     {
         if (command == null) return false;
@@ -54,5 +57,5 @@ public class CommandHistory
         return false;
     }
 
-    public int Count => history.Count;
+    
 }

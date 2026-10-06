@@ -12,3 +12,8 @@ For my university thesis, creating an AR App with AR Foundation framework in Uni
 7. Window > XR > AR Foundation > XR Enviroment to create and visualize a simulation of application
 8. Then add what you want in XR Origin (ARManager,...) and if you want add script to manage the behaviour of managers
 9. Create the various build that you want, File > Build Profiles for the various project builds
+
+## Set Up Smartphone and connection to PC
+
+1. You have to need installed and updated the "Google Play Services for AR", then you active the "developer account" by clicking ten or more times on the number of build in your system settings in your smartphone, then you have to enable de Debug USB.
+2. then you connect your smartphone to your pc and enable the "file transmission" connection, then go to File > Build Profiles and in device click refresh until you see your device, then you click build o build and run, then import the apk file generated in an directory on your smartphone 
