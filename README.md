@@ -1,11 +1,15 @@
 # AR-Foundation-Framework
 For my university thesis, creating an AR App with AR Foundation framework in Unity with ARCore XR Plug-in installed and activated; it also works for iPhone, just install and activate the plugin.
 
+All the scripts developed by me are inside the MyScripts folder in Assets; I also applied some Design Patterns and software engineering concepts, but obviously I didn't apply everything that could be applied so it can be improved a lot.
+
+
+
 > **N.B.:** Here is some information, the complete thesis is in the pdf, and I will also leave the whole folder, so all the various information will be mainly there.
 
 > **N.B.:** Obviously the application does not work as well as in the Unity simulator, since in the latter everything is ideal: camera, floors, etc...
 
-> **N.B.:** Obviously the application does not work as well as in the Unity simulator, since in the latter everything is ideal: camera, floors, etc...
+> **N.B.:** Now the UI is scaled to the size of my smartphone, so if you want to try it again on the simulator, you have to resize and move the various UI components, but it is done directly in the editor so it is quite easy
 
 ---
 
