@@ -1,0 +1,30 @@
+\chapter{Unity}
+Unity è un Game Engine(motore grafico)\cite{Unity-1}\cite{Unity-2}\cite{Unity-3} multipiattaforma che consente lo sviluppo di videogiochi e altri contenuti interattivi, quali visualizzazioni architettoniche o animazioni 3D in tempo reale.
+Introdurrò alcuni concetti fondamentali, che avevo anche già fatto da corsi di Unity alle superiori, su cui si baserà AR Foundation, senza i quali si fa fatica a capire l'intero sistema.
+
+\subsection{Pilastri di Unity}
+
+Unity si basa su 3 concetti fondamentali: i \textbf{GameObject}, che è la classe base da cui ogni cosa che si trova nella scena eredita, il \textbf{Transform} che sarebbe il componente presente in ogni GameObject il quale gestisce la posizione(x,y,z), la rotazione e la scala nello spazio 3D della scena ed infine i \textbf{Monobehaviour}, che sono semplici script in C\# che vengono agganciati al GameObject e ne fanno parte i vari componenti di AR Foundation, come ad esempio ARPlaneManager o ARTrackedImageManager, e sfruttano i classici metodi di Unity (Update(), OnEnable(), OnDisable()) per aggiornare la posizione degli oggetti 3D ogni fotogramma in base al movimento dello smartphone.
+
+\subsection{Camera}
+In un progetto normale senza AR, la Camera è l'occhio del giocatore nello spazio virtuale. In AR, la telecamera fa un doppio lavoro:
+
+\begin{itemize}
+    \item  La telecamera virtuale deve muoversi nella scena 3D di Unity esattamente come il telefono si muove nella stanza reale. AR Foundation aggancia il rilevamento di movimento (SLAM) direttamente al componente Transform della Main Camera.
+    \item Normalmente in Unity lo sfondo è un colore pieno o un cielo (Skybox). AR Foundation sostituisce lo sfondo del componente Camera con il flusso video in tempo reale della fotocamera del telefono.
+\end{itemize}
+ 
+\subsection{Sistema di Coordinate e Spazio di Scena}
+ Unity usa uno spazio di coordinate cartesiane 3D fisso (l'origine (0,0,0) ). I dispositivi AR (ARCore / ARKit) creano invece un proprio sistema di coordinate temporaneo al momento dell'avvio.
+Se metti un GameObject dentro un altro (relazione Padre-Figlio), le coordinate del figlio diventano relative al padre. AR Foundation sfrutta proprio questo concetto standard: crea un oggetto padre (\texttt{XR Origin}) che compensa e converte le coordinate del dispositivo nel sistema di coordinate del mondo di Unity.
+
+\subsection{Prefab e Instanziazione Dinamica}
+Quando il telefono rileva un piano fisicamente (un tavolo, un pavimento), AR Foundation non disegna la geometria dal nulla.
+In Unity, un Prefab è un modello o un oggetto salvato che può essere riutilizzato e AR Foundation usa la classica funzione di Unity Instantiate() per generare un Prefab di tipo "Piano" o "Punto di Ancoraggio" sulla scena non appena il sensore rileva una superficie.
+
+\subsection{Fisica e Raycasting}
+Per capire "dove tocca il dito dello schermo sul pavimento reale", AR Foundation sfrutta il sistema di fisica di Unity:
+\begin{itemize}
+    \item \textbf{Physics Raycasting}:In Unity si traccia un raggio invisibile dalla telecamera verso la scena per rilevare le collisioni (\texttt{Physics.Raycast})
+    \item \textbf{ARRaycastManager}:Estende lo stesso identico concetto: invece di sparare il raggio contro un collider virtuale di Unity, lo spara contro la mappa di punti e superfici generata dai sensori del telefono.
+\end{itemize}

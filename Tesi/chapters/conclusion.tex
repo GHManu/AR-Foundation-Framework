@@ -1,0 +1,31 @@
+\chapter{Conclusioni}
+Il confronto tra le due architetture non ha portato a un vincitore assoluto: nel corso del capitolo sono stati analizzati vantaggi e svantaggi di entrambi gli approcci, e la scelta dipende dagli obiettivi dello sviluppatore e dal tipo di applicazione da realizzare e distribuire.
+
+AR Foundation è la soluzione più adatta quando il team di sviluppo è ridotto, l’applicazione deve essere distribuita su più piattaforme, i tempi di produzione devono essere rapidi e si accettano prestazioni comunque buone. Se invece sono prioritari il massimo delle prestazioni, l’accesso alle funzionalità più recenti e il pieno controllo dell’hardware, con un’integrazione completa con Android o iOS, la scelta più appropriata è l’uso diretto di ARCore o ARKit. \newline
+
+ Inoltre, l'app sviluppata si presta a diversi ambiti applicativi: l'\textbf{arredamento e l'interior design}, per visualizzare mobili e complementi nello spazio domestico prima dell'acquisto; l'\textbf{e-commerce}, per anteprime in scala reale di prodotti; l'\textbf{architettura e l'edilizia}, per la presentazione di modelli e progetti sul sito; la \textbf{didattica e la divulgazione}, per esplorare modelli di oggetti, reperti o strutture anatomiche; e l'\textbf{intrattenimento}, ad esempio in giochi o esperienze interattive in realtà aumentata.
+ 
+ L'analisi condotta con l'\textit{Unity Profiler} \textit{on-device} mostra che l'applicazione non raggiunge il target di $60\text{ FPS}$: il tempo mediano di frame è $33.408\text{ ms}$ (circa $30\text{ FPS}$), il minimo è $19.198\text{ ms}$ e si registrano picchi isolati fino a $262.386\text{ ms}$, dovuti al rendering della camera della URP. La CPU è il limite più frequente ($41\%$ dei frame oltre il budget, contro il $20\%$ della GPU), ma il lavoro effettivo medio (\textit{Scripts} e \textit{Rendering}, circa $15.0\text{ ms}$) rientra nel budget di $16.67\text{ ms}$, mentre la quota maggiore del frame time medio è attesa di VSync ($16.039\text{ ms}$): il valore mediano è quindi in larga parte riconducibile a una cadenza di $30\text{ FPS}$, da verificare, e non solo al carico computazionale. Il carico grafico, stimato indirettamente perché il \textit{GPU Time} non è disponibile per il frame analizzato, risulta contenuto ($42$ \textit{SetPass Calls}, $7$ chiamate di disegno in $4$ batch, circa $22\text{k}$ triangoli, $46.3\text{ MB}$ di texture), così come l'occupazione di memoria ($0.66\text{ GB}$ committed). Le criticità derivano dal costo del tracciamento AR, che nel frame analizzato assorbe quasi tutto il tempo degli \texttt{Update()} ($17.07$ su $18.33\text{ ms}$), e dalle allocazioni continue sul \textit{Managed Heap}, in gran parte originate da routine di AR Foundation e del rendering, che attivano il \textit{Garbage Collector}: questo assorbe fino a $11.433\text{ ms}$ e causa buona parte dei frame oltre il budget. 
+ \newline
+ 
+ Come sviluppi futuri si individuano diverse direzioni di ottimizzazione. In
+primo luogo, la verifica del frame rate target e del cap a 30~FPS: il target
+è la frequenza a cui l'applicazione dovrebbe girare e determina il tempo
+massimo per produrre un frame (circa 33,3~ms a 30~FPS), per cui un frame time
+vicino a tale valore non indica necessariamente una CPU satura, ma può
+riflettere un'attesa imposta dal limite. In secondo luogo, l'identificazione,
+tramite la vista \textit{Hierarchy} del Profiler ordinata per \textit{GC
+Alloc}, dell'origine delle allocazioni, cioè delle richieste di memoria sul
+\textit{Managed Heap}, l'area gestita automaticamente per il codice C\#; dove
+queste dipendono dal codice dell'applicazione, possono essere ridotte
+mediante \textit{caching} dei risultati di operazioni costose, ovvero salvarli in una variabile i riusarli, \textit{object
+pooling}, ovvero riutilizzo di oggetti attivandoli e disattivandoli al posto di
+\texttt{Instantiate} e \texttt{Destroy} e riuso di \textit{buffer}, ad
+esempio la lista dei risultati dei raycast.
+Inoltre si può valutare l'introduzione del Garbage Collector incrementale, che distribuisce su più frame la liberazione della memoria inutilizzata, riducendo i picchi di frame time a
+fronte di un lieve overhead. 
+Un ulteriore intervento riguarda la riduzione del costo del tracciamento AR, ossia dell'elaborazione con cui ARCore stima la posa del dispositivo e analizza l'ambiente, ad esempio disattivando le funzionalità non necessarie come il point cloud, la stima della luce o
+l'occlusione, tenendo conto del compromesso con la robustezza dell'esperienza
+d'uso. 
+Infine, una nuova campagna di test con build di rilascio su più dispositivi permetterebbe di ottenere misure più vicine all'esperienza reale, poiché la build di debug con Profiler collegato introduce overhead, e di quantificare i miglioramenti confrontando, prima e dopo gli interventi, frametime e memoria utilizzata.
+

@@ -1,0 +1,142 @@
+% Twoside implica che i capitoli inizino sempre con la prima pagina a sinistra, eventualmente lasciando una pagina vuota nel capitolo precedente. 
+\documentclass[a4paper, twoside,openright]{report}
+
+% Dimensione dei margini
+\usepackage[a4paper,top=3cm,bottom=3cm,left=3cm,right=3cm]{geometry} 
+% Dimensione del font
+\usepackage[fontsize=13pt]{scrextend}
+% Lingua del testo
+\usepackage[english,italian]{babel}
+% Lingua per la bibliografia
+\usepackage[fixlanguage]{babelbib}
+% Codifica del testo
+\usepackage[utf8]{inputenc} 
+% Encoding del testo
+\usepackage[T1]{fontenc}
+% Per modificare l'header delle pagine 
+\usepackage{fancyhdr}               
+
+\usepackage{float}
+
+% Librerie matematiche
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}         
+
+% Uso delle immagini
+\usepackage{graphicx}
+% Uso dei colori
+\usepackage[dvipsnames, table]{xcolor}         
+% Uso dei listing per il codice
+\usepackage{listings}    
+% Per andare a capo nei url
+\usepackage[hyphens]{url}
+% Per inserire gli hyperlinks tra i vari elementi del testo 
+\usepackage{hyperref}     
+% Diversi tipi di sottolineature
+\usepackage[normalem]{ulem}
+
+% -----------------------------------------------------------------
+
+% Modifica lo stile dell'header
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\rightmark}
+\rhead{\textbf{\thepage}}
+\fancyfoot{}
+\setlength{\headheight}{16pt}
+
+% Rimuove il numero di pagina all'inizio dei capitoli
+\fancypagestyle{plain}{
+  \fancyfoot{}
+  \fancyhead{}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+\definecolor{backcolour}{rgb}{0.90,0.95,0.92}
+
+% Stile del codice
+% \lstset{style=codeStyle}
+\lstdefinestyle{codeStyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{teal},
+    keywordstyle=\color{Magenta},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{violet},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,     
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=1
+} \lstset{style=codeStyle}
+
+% \lstset{style=longBlock}
+\lstdefinestyle{longBlock}{
+    commentstyle=\color{teal},
+    keywordstyle=\color{Magenta},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{violet},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+} \lstset{style=codeStyle}
+
+% Togliendo il commento al comando che segue, si inseriscono nella bibliografia anche le fonti presenti in Bibliography.bib ma non citati direttamente con il comando \cite
+\nocite{*}
+
+% Margini prima e dopo blocchi di codice, per avere più distanza
+\lstset{aboveskip=20pt,belowskip=20pt}
+
+% Modifica dello stile dei riferimenti
+\hypersetup{
+    colorlinks,
+    linkcolor=black,
+    citecolor=black
+}
+
+% Aggiunti definizioni, teoremi, linea e listing
+\newtheorem{definition}{Definizione}[section]
+\newtheorem{theorem}{Teorema}[section]
+\providecommand*\definitionautorefname{Definizione}
+\providecommand*\theoremautorefname{Teorema}
+\providecommand*{\listingautorefname}{Listing}
+\providecommand*\lstnumberautorefname{Linea}
+
+\raggedbottom
+
+
+
+% -----------------------------------------------------------------
+\begin{document}
+\include{chapters/cover-page}
+\let\cleardoublepage\clearpage
+\include{chapters/Abstract}
+\let\cleardoublepage\clearpage
+
+\tableofcontents
+
+\listoffigures
+
+\include{chapters/introduction}
+\include{chapters/augmented-reality}
+\include{chapters/Unity}
+\include{chapters/AR-Foundation}
+\include{chapters/App}
+\include{chapters/conclusion}
+\bibliographystyle{unsrt}
+\bibliography{main}
+\end{document}
