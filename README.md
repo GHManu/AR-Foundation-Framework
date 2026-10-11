@@ -9,7 +9,9 @@ For my university thesis, creating an AR App with AR Foundation framework in Uni
 
 ---
 
-![Screen while app is running on my device](Images/MainAppInUseScreen.jpeg)
+<div align="center">
+    <img src="Images/MainAppInUseScreen.jpeg" alt="Screen while app is running on my device" width="50%">
+</div>
 
 ---
 
