@@ -192,11 +192,18 @@ Nonostante i numerosi vantaggi, la diffusione della realtà aumentata comporta d
  \begin{figure}[H]
             \centering
             \includegraphics[width=0.8\textwidth]{images/augmented-reality/AR-Working-General-Architecture.png} 
-            \caption{AR General Working Architecture}
+            \caption{AR General Working Architecture\cite{img-ar-architecture}}
             \label{fig:dt}
 \end{figure}
 
 Il funzionamento di un sistema di AR si basa su un ciclo continuo di elaborazione (loop di feedback) suddiviso in tre fasi sequenziali fondamentali\cite{augmented-reality-2}:
+
+\begin{figure}[H]
+            \centering
+            \includegraphics[width=1\textwidth]{images/augmented-reality/The-typical-pipeline-of-an-AR-application.png} 
+            \caption{AR Pipeline}
+            \label{fig:dt}
+    \end{figure}
 
 \begin{itemize}
     \item \textbf{Sensazione e Tracciamento} \newline
@@ -206,7 +213,7 @@ Il funzionamento di un sistema di AR si basa su un ciclo continuo di elaborazion
 
     \begin{figure}[H]
             \centering
-            \includegraphics[width=0.7\textwidth]{images/augmented-reality/SLAM.jpg} 
+            \includegraphics[width=1\textwidth]{images/augmented-reality/SLAM.png} 
             \caption{SLAM \cite{img-SLAM}}
             \label{fig:dt}
     \end{figure}
@@ -221,13 +228,6 @@ Il funzionamento di un sistema di AR si basa su un ciclo continuo di elaborazion
 
     La coerenza visiva viene mantenuta grazie a due elementi cruciali: l'illuminazione coerente e l'occlusione. Nel primo caso, il sistema analizza le fonti di luce presenti nell'ambiente reale e illumina di conseguenza l'oggetto virtuale, generando ombre realistiche che ne impediscono l'effetto "piatto" o posticcio. Nel secondo caso, l'occlusione risolve il problema della profondità gestendo le sovrapposizioni: se una persona passa la mano o un oggetto reale davanti a un ologramma, la mano deve coprire l'oggetto virtuale perché si trova più vicina agli occhi rispetto ad esso. Senza l'occlusione, l'ologramma rimarrebbe sempre visibile in primo piano, rovinando completamente il senso di immersione. Infine, il ciclo si completa gestendo l'interazione dell'utente: attraverso gesture, ossia i movimenti delle mani tracciati dalle telecamere, comandi vocali o input touch, l'utente può manipolare l'oggetto virtuale, spostandolo, ridimensionandolo o aprendolo, oppure può inviare comandi diretti che modificano lo stato del mondo reale o dei sistemi fisici connessi.
 
-
-     \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.7\textwidth]{images/augmented-reality/The-typical-pipeline-of-an-AR-application.png} 
-            \caption{AR Pipeline\cite{img-ar_pipeline}}
-            \label{fig:dt}
-    \end{figure}
 
 \end{itemize}
 

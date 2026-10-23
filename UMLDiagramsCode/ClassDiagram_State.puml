@@ -1,0 +1,90 @@
+@startuml ClassDiagram_State
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 12
+skinparam ArrowFontSize 11
+hide empty members
+hide circle
+
+' ===================== INPUT =====================
+package "Input" <<Input>> #FFF3E0 {
+  class InputManager {
+    +GetInputPosition()
+    +IsPressedThisFrame()
+    +IsPressed()
+    +WasReleasedThisFrame()
+  }
+}
+
+' ===================== APPLICATION =====================
+package "Application" <<App>> #E1F2FB {
+
+  class ARMainApplication {
+    +ChangeState(state, obj)
+  }
+
+  package "Manager" {
+    class CustomPlaneManager {
+      +HighlightPlane(plane)
+      +ClearHighlight()
+    }
+    class CustomPointCloudManager {
+      +SetPointCloudActiveState(isActive)
+    }
+  }
+}
+
+' ===================== OBJECT INTERACTIONS =====================
+package "ObjectInteractions" <<Interactions>> #E8F3E8 {
+
+  interface IObjectInteractionState {
+    +EnterState(context, obj)
+    +UpdateState(context, obj)
+    +ExitState(context, obj)
+  }
+
+  class IdleState
+
+  package "Spawn" {
+    class SpawnState
+  }
+
+  package "Manipulated" {
+    class DragState
+    class DropState
+  }
+}
+
+' ===================== PATTERN STATE =====================
+IdleState  ..|> IObjectInteractionState
+SpawnState ..|> IObjectInteractionState
+DragState  ..|> IObjectInteractionState
+DropState  ..|> IObjectInteractionState
+
+ARMainApplication --> IObjectInteractionState : stato corrente
+IObjectInteractionState ..> ARMainApplication : context
+
+IdleState  --> SpawnState : tocco su piano AR\nsenza oggetti vicini
+IdleState  --> DragState  : tocco su oggetto\no vicino (< 25 cm)
+SpawnState --> IdleState  : subito dopo lo spawn
+DragState  --> DropState  : rilascio touch
+DropState  --> IdleState  : ritorno immediato
+
+' ===================== USO DEI COMPONENTI =====================
+ARMainApplication *-- InputManager : crea e gestisce
+ARMainApplication --> CustomPlaneManager      : GetComponent
+ARMainApplication --> CustomPointCloudManager : GetComponent
+
+IdleState ..> InputManager : via context\n(GetInputPosition)
+DragState ..> CustomPlaneManager      : via context\n(HighlightPlane)
+DragState ..> CustomPointCloudManager : via context\n(SetPointCloudActiveState)
+
+' ===================== NOTE SUI PATTERN =====================
+note top of IObjectInteractionState
+  <b>Pattern State</b>
+  Il comportamento di ARMainApplication
+  dipende dallo stato corrente
+  (Idle, Spawn, Drag, Drop).
+end note
+
+@enduml

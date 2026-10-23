@@ -1,0 +1,107 @@
+@startuml ClassDiagram_Command
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 12
+skinparam ArrowFontSize 11
+hide empty members
+hide circle
+
+' ===================== UI =====================
+package "UI" <<UI>> #F3E5F5 {
+  class ARUIManager
+}
+
+' ===================== APPLICATION =====================
+package "Application" <<App>> #E1F2FB {
+
+  class ARMainApplication {
+    +ExecuteCommand(command)
+    +UndoLastCommand()
+    +StartTimer(delay, onComplete)
+  }
+
+  class CommandHistory {
+    +Push(command)
+    +Pop()
+    +RemoveCommand(command)
+  }
+}
+
+' ===================== OBJECT INTERACTIONS =====================
+package "ObjectInteractions" <<Interactions>> #E8F3E8 {
+
+  interface ICommand {
+    +Execute()
+    +Undo()
+  }
+
+  package "Spawn" {
+    class SpawnState
+    class SpawnObjectCommand
+  }
+
+  package "Manipulated" {
+    class DragState
+    class MoveObjectCommand
+    class RotateObjectCommand
+    class ScaleObjectCommand
+    class DeleteObjectCommand {
+      +IsDestroyed
+      +DisposeAndDestroyPermanent()
+    }
+    class ClearAllObjectsCommand
+  }
+}
+
+' ===================== PATTERN COMMAND =====================
+SpawnObjectCommand     ..|> ICommand
+MoveObjectCommand      ..|> ICommand
+RotateObjectCommand    ..|> ICommand
+ScaleObjectCommand     ..|> ICommand
+DeleteObjectCommand    ..|> ICommand
+ClearAllObjectsCommand ..|> ICommand
+
+' chi crea i comandi
+SpawnState  --> SpawnObjectCommand : crea
+DragState   --> MoveObjectCommand  : crea in ExitState\nse l'oggetto si è mosso
+ARUIManager --> RotateObjectCommand    : crea
+ARUIManager --> ScaleObjectCommand     : crea
+ARUIManager --> ClearAllObjectsCommand : crea
+ARUIManager --> DeleteObjectCommand    : crea
+
+' esecuzione e storico
+SpawnState  ..> ARMainApplication : ExecuteCommand
+DragState   ..> ARMainApplication : ExecuteCommand
+ARUIManager --> ARMainApplication : ExecuteCommand,\nUndoLastCommand
+
+ARMainApplication *-- CommandHistory : compone
+CommandHistory o--> "0..10" ICommand
+
+' comandi che usano il context
+DeleteObjectCommand    ..> ARMainApplication : StartTimer (15 s),\nCommand_History
+ClearAllObjectsCommand ..> ARMainApplication : Objects_Spawned
+
+' gestione particolare del Delete
+ARMainApplication ..> DeleteObjectCommand : Undo scarta i Delete\ngià distrutti
+CommandHistory    ..> DeleteObjectCommand : DisposeAndDestroyPermanent\nal superamento della capacità
+
+' ===================== NOTE SUI PATTERN =====================
+note top of ICommand
+  <b>Pattern Command</b>
+  Ogni azione dell'utente è incapsulata
+  in un comando eseguibile e annullabile.
+end note
+
+note right of CommandHistory
+  Storico per l'Undo:
+  capacità 10, al superamento
+  scarta il comando più vecchio.
+end note
+
+note bottom of DeleteObjectCommand
+  L'Undo è possibile solo entro 15 s:
+  dopo il timer l'oggetto è
+  distrutto in modo permanente.
+end note
+
+@enduml

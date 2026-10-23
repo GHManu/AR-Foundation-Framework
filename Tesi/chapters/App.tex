@@ -1,10 +1,16 @@
 \chapter{App}
 \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.4\textwidth]{images/app/MainAppInUseScreen.jpeg} 
-        \caption{ Screen while my app is running on my phone}
-        \label{fig:dt}
-    \end{figure}
+    \centering
+    
+    \includegraphics[width=0.4\textwidth]{images/app/MainAppInUseScreen.jpeg}
+    \hfill 
+    \includegraphics[width=0.4\textwidth]{images/app/ScreenInApp.jpeg} 
+    
+    
+    \caption{Screenshots while my app is running on my phone}
+    \label{fig:dt}
+\end{figure}
+
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.7\textwidth]{images/app/AppInUseInEditor.png} 
@@ -18,7 +24,7 @@
 \subsection{Scopo e Uso}
 L'applicazione sviluppata in questo progetto è un app AR di tipo Markerless e Video See-Through, la quale consiste nella creazione dinamica di oggetti tridimensionali su superfici piane, con possibilità di eliminare, ruotare, scalare, spostare con drag and drop, pulire la scena e applicare \texttt{"l'undo"} alle azioni dell'utente (annullamento dell'azione), il quale interagisce tramite una semplice GUI composta da pulsanti, slider e per quanto riguarda \texttt{l'XR Simulator} con un input che prevede gestione del click del mouse, di una telecamera virtuale ARCamera e la possibilità di muoversi con WASD con la tastiera nell'editor di Unity e invece per quanto riguarda la distribuzione mobile del touch del touchscreen e della telecamera e sensori del cellulare.
 
-Quest'app è stata distribuita su Android usando ARCore XR Plug-In.
+Quest'app è stata distribuita su Android usando AR Foundation con ARCore XR Plug-In.
 Come si può presumere, l'app distribuita su smartphone avrà un margine d'errore maggiore rispetto all'editor, derivato dal fatto che non si hanno superfici e telecamere/sensori ideali e stabili come nell'editor, infatti ciò può portare ad ulteriori ritardi, errori, saturazione e ha tanti altri fattori negativi. 
 
 Per la realizzazione di tale software, ho fatto uso di 3 manager di AR principali, ovvero \texttt{ARPlane, ARRaycast e ARPointCloud} aggiunti come componenti all'\texttt{XR Origin}, con in aggiunta due manager custom creati da me per personalizzare \texttt{ARPlaneManager e ARPointCloudManager}, facendo in modo, rispettivamente, di vedere tre colori diversi per superfici verticali e orizzontali e quando l'oggetto è in stato di \texttt{"drag"} e stessa cosa per quanto riguarda i \texttt{"point cloud"}, un colore di default e l'altro quando il drag è attivo. Esempio di parte di codice usato per CustomPlaneManger: 
@@ -131,6 +137,57 @@ In particolare, i 3 componenti AR usati sono:
 
 \subsubsection{RNF7 – Scalabilità} Il sistema deve poter gestire l'aggiunta di ulteriori elementi senza degradare significativamente le prestazioni.
 
+\subsection{UML Diagrams}
+Ho diviso in più parti i diagrammi Activity e Class per renderli più visibili.
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth, keepaspectratio]{images/app/ActivityDiagram_Generale.png} 
+        \caption{ Activity Diagram, Focus: Generale}
+        \label{fig:dt}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth, keepaspectratio]{images/app/ActivityDiagram_selezione_drag.png} 
+        \caption{ Activity Diagram, Focus: Selezione e Drag}
+        \label{fig:dt}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth, keepaspectratio]{images/app/ActivityDiagram_GUI.png} 
+        \caption{ Activity Diagram, Focus: GUI}
+        \label{fig:dt}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth, keepaspectratio]{images/app/ActivityDiagram_del_undo.png} 
+        \caption{ Activity Diagram, Focus: GUI Delete e Undo}
+        \label{fig:dt}
+    \end{figure}
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth, keepaspectratio]{images/app/ClassDiagram_Factory-Observer.png} 
+        \caption{ Class Diagram, Focus: Factory e Observer}
+        \label{fig:dt}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth, keepaspectratio]{images/app/ClassDiagram_State.png} 
+        \caption{ Class Diagram, Focus: State}
+        \label{fig:dt}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth, keepaspectratio]{images/app/ClassDiagram_Command.png} 
+        \caption{ Class Diagram, Focus: Command}
+        \label{fig:dt}
+    \end{figure}
+    
 \section{Design Pattern}
 \subsection{Convenzioni di Nomenclatura}
 
@@ -185,12 +242,8 @@ public class SpawnState : IObjectInteractionState
             ICommand spawn_cmd = new SpawnObjectCommand(context.Object_Factory, spawn_context, context);
             context.ExecuteCommand(spawn_cmd);
         }
-
         context.ChangeState(new IdleState(), null);
-    }
-
-    public void UpdateState(ARMainApplication context, GameObject obj) { }
-    public void ExitState(ARMainApplication context, GameObject obj) { }
+    }//...
 }
 public class ARMainApplication : MonoBehaviour
 {
@@ -247,19 +300,7 @@ public abstract class ASpawnObjectFactory
 }
 
 public class SpawnObjectCommand : ICommand
-{
-    private readonly ASpawnObjectFactory factory;
-    private readonly SpawnContext spawn_context;
-    private readonly ARMainApplication ar_app;
-    private GameObject spawned_object;
-
-    public SpawnObjectCommand(ASpawnObjectFactory factory, SpawnContext spawn_context, ARMainApplication ar_app)
-    {
-        this.factory = factory;
-        this.spawn_context = spawn_context;
-        this.ar_app = ar_app;
-    }
-
+{//...
     public void Execute()
     {
         spawned_object = factory.SpawnObject(spawn_context);
@@ -289,19 +330,10 @@ public class SpawnObjectCommand : ICommand
 è una struttura dati, creata da me, formata da una \texttt{LinkedList} di \texttt{ICommand}, implementato come uno stack, in modo da creare il meccanismo di \texttt{undo} ed eliminare l'undo o dei comandi per oggetti selezionabili che possono non coincidere con gli ultimi inseriti. 
 \begin{lstlisting}[language={[Sharp]C}]
 public class CommandHistory
-{
-    private readonly LinkedList<ICommand> history = new LinkedList<ICommand>();
-    private readonly int maxCapacity;
-
-    public CommandHistory(int maxCapacity = 10)
-    {
-        this.maxCapacity = maxCapacity;
-    }
-
+{//...
     public void Push(ICommand command)
     {
         history.AddLast(command);
-
         // Se superiamo la capacita' massima, rimuoviamo il primo elemento (il piu' vecchio)
         if (history.Count > maxCapacity)
         {
@@ -323,9 +355,7 @@ public class CommandHistory
         ICommand lastCommand = history.Last.Value;
         history.RemoveLast();
         return lastCommand;
-    }
-
-    public int Count => history.Count;
+    }//...
 
     //Serve in DeleteObjectCommand, poiche' l'oggetto selezionato puo' essere diverso dall'ultimo messo
     public bool RemoveCommand(ICommand command)

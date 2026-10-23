@@ -1,0 +1,179 @@
+<mxfile host="app.diagrams.net" pages="3">
+  <diagram name="Basso livello" id="p1">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="p1-3" parent="1" style="rounded=1;arcSize=4;html=1;fillColor=default;strokeColor=light-dark(#888780,#000000);fontColor=#2C2C2A;fontSize=14;verticalAlign=top;spacingTop=8;strokeWidth=2;gradientColor=light-dark(#000000,#000033);" value="&lt;b&gt;AR Manager&lt;/b&gt;&lt;br&gt;&lt;font style=&#39;font-size:12px&#39;&gt;Livello applicativo&lt;/font&gt;" vertex="1">
+          <mxGeometry height="300" width="200" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-4" parent="1" style="rounded=1;arcSize=4;html=1;fillColor=default;strokeColor=light-dark(#888780,#000000);fontColor=#2C2C2A;fontSize=14;verticalAlign=top;spacingTop=8;strokeWidth=2;gradientColor=light-dark(#000000,#000033);" value="&lt;b&gt;AR Subsystem&lt;/b&gt;&lt;br&gt;&lt;font style=&#39;font-size:12px&#39;&gt;Livello di astrazione&lt;/font&gt;" vertex="1">
+          <mxGeometry height="300" width="200" x="250" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-5" parent="1" style="rounded=1;arcSize=4;html=1;fillColor=default;strokeColor=light-dark(#888780,#000000);fontColor=#2C2C2A;fontSize=14;verticalAlign=top;spacingTop=8;strokeWidth=2;gradientColor=light-dark(#000000,#000033);" value="&lt;b&gt;AR Provider&lt;/b&gt;&lt;br&gt;&lt;font style=&#39;font-size:12px&#39;&gt;Livello piattaforma&lt;/font&gt;" vertex="1">
+          <mxGeometry height="300" width="200" x="460" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-6" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#3C3489;fontSize=14;strokeWidth=1;" value="&lt;b&gt;ARTrackedImage&lt;br&gt;Manager&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="170" x="55" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-7" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#3C3489;fontSize=14;strokeWidth=1;" value="&lt;b&gt;XRImageTracking&lt;br&gt;Subsystem&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="170" x="265" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-8" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#E1F5EE;strokeColor=#0F6E56;fontColor=#085041;fontSize=14;strokeWidth=1;" value="&lt;b&gt;ARCoreImage&lt;br&gt;TrackingSubsystem&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="170" x="475" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-9" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#E1F5EE;strokeColor=#0F6E56;fontColor=#085041;fontSize=14;strokeWidth=1;" value="&lt;b&gt;ARKitImage&lt;br&gt;TrackingSubsystem&lt;/b&gt;" vertex="1">
+          <mxGeometry height="70" width="170" x="475" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-10" edge="1" parent="1" source="p1-6" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p1-7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-11" edge="1" parent="1" source="p1-7" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p1-8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p1-12" edge="1" parent="1" source="p1-7" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p1-9" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="Alto livello" id="p2">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="p2-3" parent="1" style="rounded=1;arcSize=4;html=1;fillColor=default;strokeColor=light-dark(#888780,#000000);fontColor=#2C2C2A;fontSize=14;verticalAlign=top;spacingTop=8;strokeWidth=2;gradientColor=light-dark(#000000,#33001A);" value="&lt;b&gt;Cross-platform (AR Foundation)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="450" width="380" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-4" parent="1" style="rounded=1;arcSize=4;html=1;fillColor=default;strokeColor=light-dark(#888780,#000000);fontColor=#2C2C2A;fontSize=14;verticalAlign=top;spacingTop=8;strokeWidth=2;gradientColor=light-dark(#000000,#33001A);" value="&lt;b&gt;SDK nativi&lt;/b&gt;" vertex="1">
+          <mxGeometry height="450" width="250" x="450" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-5" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#3C3489;fontSize=14;strokeWidth=1;" value="&lt;b&gt;App AR&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="200" x="130" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-6" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#3C3489;fontSize=14;strokeWidth=1;" value="&lt;b&gt;AR Foundation&lt;/b&gt;&lt;br&gt;&lt;font style=&#39;font-size:12px&#39;&gt;com.unity.xr.arfoundation&lt;/font&gt;" vertex="1">
+          <mxGeometry height="56" width="200" x="130" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-7" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#3C3489;fontSize=14;strokeWidth=1;" value="&lt;b&gt;ARKit plugin&lt;/b&gt;&lt;br&gt;&lt;font style=&#39;font-size:12px&#39;&gt;xr.arkit&lt;/font&gt;" vertex="1">
+          <mxGeometry height="56" width="150" x="60" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-8" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#3C3489;fontSize=14;strokeWidth=1;" value="&lt;b&gt;ARCore plugin&lt;/b&gt;&lt;br&gt;&lt;font style=&#39;font-size:12px&#39;&gt;xr.arcore&lt;/font&gt;" vertex="1">
+          <mxGeometry height="56" width="150" x="250" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-9" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;ARKit SDK&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="150" x="60" y="345" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-10" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;ARCore SDK&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="150" x="250" y="345" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-11" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;Device iOS&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="150" x="60" y="425" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-12" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;Device Android&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="150" x="250" y="425" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-13" edge="1" parent="1" source="p2-5" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-14" edge="1" parent="1" source="p2-6" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-15" edge="1" parent="1" source="p2-6" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-16" edge="1" parent="1" source="p2-7" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-9" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-17" edge="1" parent="1" source="p2-8" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-10" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-18" edge="1" parent="1" source="p2-9" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-11" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-19" edge="1" parent="1" source="p2-10" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-12" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-20" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;App ARKit&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="100" x="470" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-21" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;App ARCore&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="100" x="580" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-22" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;ARKit SDK&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="100" x="470" y="345" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-23" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;ARCore SDK&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="100" x="580" y="345" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-24" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="Device&amp;nbsp;&lt;b&gt;iOS&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="100" x="470" y="425" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-25" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;Device Android&lt;/b&gt;" vertex="1">
+          <mxGeometry height="44" width="100" x="580" y="425" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-26" edge="1" parent="1" source="p2-20" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-22" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-27" edge="1" parent="1" source="p2-21" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-23" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-28" edge="1" parent="1" source="p2-22" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-24" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-29" edge="1" parent="1" source="p2-23" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=#5F5E5A;html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;" target="p2-25" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p2-30" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontColor=#5F5E5A;" value="Nessun livello&lt;br&gt;intermedio" vertex="1">
+          <mxGeometry height="40" width="80" x="535" y="230" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="Architettura generale" id="p3">
+    <mxGraphModel dx="1414" dy="750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="p3-3" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=light-dark(#F1EFE8,#003300);strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;Utente&lt;/b&gt;" vertex="1">
+          <mxGeometry height="56" width="130" x="40" y="169.5" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-4" parent="1" style="rounded=1;arcSize=6;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#3C3489;fontSize=14;verticalAlign=top;spacingTop=8;" value="&lt;b&gt;Dispositivo AR&lt;/b&gt;" vertex="1">
+          <mxGeometry height="300" width="220" x="260" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-app" parent="1" style="rounded=1;arcSize=8;html=1;dashed=1;fillColor=none;strokeColor=#888780;fontColor=#2C2C2A;fontSize=14;verticalAlign=top;spacingTop=6;" value="&lt;b&gt;App AR&lt;/b&gt;" vertex="1">
+          <mxGeometry height="230" width="180" x="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-5" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#E1F5EE;strokeColor=#0F6E56;fontColor=#085041;fontSize=14;strokeWidth=1;" value="&lt;b&gt;Mondo/Oggetto virtuale&lt;/b&gt;" vertex="1">
+          <mxGeometry height="160" width="140" x="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-6" parent="1" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=light-dark(#F1EFE8,#003300);strokeColor=#5F5E5A;fontColor=#444441;fontSize=14;strokeWidth=1;" value="&lt;b&gt;Mondo/Oggetto reale&lt;/b&gt;" vertex="1">
+          <mxGeometry height="145" width="130" x="570" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-7" edge="1" parent="1" source="p3-3" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=light-dark(#5F5E5A,#000000);html=1;fontSize=12;fontColor=#5F5E5A;verticalAlign=bottom;labelBackgroundColor=none;startArrow=open;startFill=0;" target="p3-4" value="&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(0, 0, 0));&quot;&gt;Interazione&lt;/span&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p3-8" edge="1" parent="1" source="p3-4" style="endArrow=open;endFill=0;strokeWidth=1.5;strokeColor=light-dark(#5F5E5A,#000000);html=1;fontSize=12;fontColor=light-dark(#5F5E5A,#000000);verticalAlign=bottom;labelBackgroundColor=none;startArrow=open;startFill=0;" target="p3-6" value="Tracking">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TH5TM0pjd0FHGIgxsHDI-1" parent="1" style="shape=mermaidUsecaseActor;actorType=awesome;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;labelPerimeter=1;fillColor=none;strokeColor=light-dark(#000000,#000000);" value="" vertex="1">
+          <mxGeometry height="72" width="56" x="77" y="97.5" as="geometry" />
+        </mxCell>
+        <mxCell id="TH5TM0pjd0FHGIgxsHDI-2" parent="1" style="html=1;shape=mxgraph.basic.isocube;isoAngle=15;dashed=1;dashPattern=8 4 1 4;" value="" vertex="1">
+          <mxGeometry height="56" width="56" x="342" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="TH5TM0pjd0FHGIgxsHDI-3" parent="1" style="html=1;shape=mxgraph.basic.isocube;isoAngle=15;" value="" vertex="1">
+          <mxGeometry height="56" width="56" x="607" y="214" as="geometry" />
+        </mxCell>
+        <mxCell id="TH5TM0pjd0FHGIgxsHDI-5" parent="1" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;imageAspect=0;aspect=fixed;image=https://icons.diagrams.net/icon-cache1/Ecommerce_Online_Shop-2673/Mobile_Phone-735.svg;labelPerimeter=1;" value="" vertex="1">
+          <mxGeometry height="24" width="24" x="276" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="H6pELgQ-iKznmeiu6bxs-2" parent="1" style="image;html=1;image=img/lib/clip_art/computers/Virtual_Application_128x128.png;labelPerimeter=1;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="290" y="87" as="geometry" />
+        </mxCell>
+        <mxCell id="z5byHj85A_ExQbx8ReDu-1" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=default;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=0;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.globe;labelPerimeter=1;" value="" vertex="1">
+          <mxGeometry height="63" width="63" x="603.5" y="62" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

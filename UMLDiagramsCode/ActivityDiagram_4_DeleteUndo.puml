@@ -1,0 +1,44 @@
+@startuml
+title Activity Diagram: comandi Delete e Undo
+skinparam shadowing false
+skinparam defaultFontSize 12
+skinparam ArrowColor #37474F
+skinparam ActivityBackgroundColor #E1F2FB
+skinparam ActivityBorderColor #5B9BD5
+skinparam ActivityDiamondBackgroundColor #FFFDE7
+skinparam ActivityDiamondBorderColor #FFC107
+skinparam NoteBackgroundColor #FFFDE7
+skinparam NoteBorderColor #FFC107
+skinparam PartitionBorderColor #90A4AE
+
+start
+partition "Gestione comando" #FFF3E0 {
+  if (comando) then (Delete)
+    :Eliminazione temporanea oggetto\nselezionato o ultimo creato;
+    :Avvio timer;
+    note right
+      Durante il timer
+      l'undo è ancora possibile
+    end note
+    if (Timer scaduto?) then (sì)
+      :Eliminazione permanente\ndell'oggetto; <<#FFCDD2>>
+      note right
+        Undo non più disponibile
+      end note
+    else (no)
+      :Oggetto in attesa\n(ripristinabile);
+    endif
+  else (Undo)
+    if (Ultima azione è Delete?) then (sì)
+      if (Timer ancora attivo?) then (sì)
+        :Ripristino oggetto\ne annullamento timer; <<#C8E6C9>>
+      else (no)
+        :Undo non possibile\n(eliminazione già permanente); <<#FFCDD2>>
+      endif
+    else (no)
+      :Annullamento ultima azione\n(create, move, rotate, scale, drag);
+    endif
+  endif
+}
+stop
+@enduml

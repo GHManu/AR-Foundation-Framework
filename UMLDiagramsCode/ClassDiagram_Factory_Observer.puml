@@ -1,0 +1,113 @@
+@startuml ClassDiagram_Factory_Observer
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 12
+skinparam ArrowFontSize 11
+hide empty members
+hide circle
+
+' ===================== UI =====================
+package "UI" <<UI>> #F3E5F5 {
+  class UIScrollListManager
+}
+
+' ===================== APPLICATION =====================
+package "Application" <<App>> #E1F2FB {
+
+  class ARMainApplication {
+    +Object_To_Spawn
+    +Object_Factory
+    +Load_Prefabs
+    +NotifyObjectSpawned(obj)
+    --
+    +event On_selected_object_changed
+    +event On_dragging_state_changed
+    +event On_object_to_spawn_changed
+    +event On_object_spawned
+  }
+
+  package "UploadPrefabs" {
+    class LoadPrefabs {
+      +Spawnable_Objects
+    }
+  }
+}
+
+' ===================== OBJECT INTERACTIONS =====================
+package "ObjectInteractions" <<Interactions>> #E8F3E8 {
+
+  interface ICommand {
+    +Execute()
+    +Undo()
+  }
+
+  package "Spawn" {
+
+    ' Pattern FACTORY METHOD
+    abstract class ASpawnObjectFactory {
+      +{abstract} SpawnObject(context)
+    }
+    class GeometricShapesFactory {
+      +SpawnObject(context)
+    }
+
+    ' DTO per i parametri dello spawn
+    class SpawnContext <<struct>> {
+      HitPose
+      ObjectToSpawn
+      ObjectsSpawned
+      SpawnableObjects
+      MainCamera
+    }
+
+    class SpawnState
+    class SpawnObjectCommand
+  }
+}
+
+' ===================== FACTORY METHOD =====================
+GeometricShapesFactory --|> ASpawnObjectFactory
+ASpawnObjectFactory ..> SpawnContext : parametro
+
+SpawnState ..> SpawnContext : crea
+SpawnState ..> SpawnObjectCommand : crea\n(ExecuteCommand)
+SpawnState ..> ARMainApplication : context
+
+SpawnObjectCommand ..|> ICommand
+SpawnObjectCommand --> SpawnContext
+SpawnObjectCommand --> ASpawnObjectFactory : SpawnObject(context)
+SpawnObjectCommand ..> ARMainApplication : NotifyObjectSpawned
+
+ARMainApplication --> ASpawnObjectFactory : Object_Factory
+ARMainApplication ..> GeometricShapesFactory : crea in Start
+
+' ===================== SELEZIONE OGGETTO DA SPAWNARE =====================
+ARMainApplication --> LoadPrefabs : GetComponent
+UIScrollListManager --> LoadPrefabs : legge Spawnable_Objects
+UIScrollListManager --> ARMainApplication : imposta Object_To_Spawn
+
+' ===================== OBSERVER =====================
+UIScrollListManager ..> ARMainApplication : si iscrive a\nOn_object_to_spawn_changed
+
+' ===================== NOTE SUI PATTERN =====================
+note top of ASpawnObjectFactory
+  <b>Pattern Factory Method</b>
+  La classe astratta dichiara SpawnObject,
+  GeometricShapesFactory crea l'istanza
+  del prefab scelto.
+end note
+
+note right of SpawnContext
+  DTO: raggruppa i parametri
+  dello spawn senza passare
+  tutta ARMainApplication.
+end note
+
+note bottom of ARMainApplication
+  <b>Pattern Observer</b> (Subject)
+  Gli event Action notificano i cambiamenti.
+  Nel codice l'unico iscritto è UIScrollListManager
+  (On_object_to_spawn_changed).
+end note
+
+@enduml
