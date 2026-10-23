@@ -1,30 +1,29 @@
 \chapter{Unity}
-Unity è un Game Engine(motore grafico)\cite{Unity-1}\cite{Unity-2}\cite{Unity-3} multipiattaforma che consente lo sviluppo di videogiochi e altri contenuti interattivi, quali visualizzazioni architettoniche o animazioni 3D in tempo reale.
-Introdurrò alcuni concetti fondamentali, che avevo anche già fatto da corsi di Unity alle superiori, su cui si baserà AR Foundation, senza i quali sarebbe difficile capire l'intero sistema.
+Unity è un motore di gioco (\textit{game engine})\cite{Unity-1}\cite{Unity-2}\cite{Unity-3} multipiattaforma che consente lo sviluppo di videogiochi e altri contenuti interattivi, come visualizzazioni architettoniche o animazioni 3D in tempo reale. In questo capitolo introduco i concetti di Unity su cui si basa AR Foundation, necessari per comprendere il funzionamento dell'intero sistema.
 
-\subsection{Pilastri di Unity}
+\section{Pilastri di Unity}
+Unity si basa su tre concetti. Il \textbf{GameObject} è l'entità di base della scena (un oggetto 3D, una luce, la camera): di per sé è un contenitore vuoto, il cui comportamento è definito dai \textit{componenti} associati. Il \textbf{Transform} è il componente presente in ogni GameObject e gestisce posizione (x, y, z), rotazione e scala nello spazio 3D della scena. I \textbf{MonoBehaviour} sono gli script C\# che si agganciano a un GameObject come componenti; ne fanno parte anche quelli di AR Foundation, come \texttt{ARPlaneManager} e \texttt{ARTrackedImageManager}. Questi script sfruttano i metodi del ciclo di vita di Unity (\texttt{Awake()}, \texttt{OnEnable()}, \texttt{Update()}, \texttt{OnDisable()}), richiamati automaticamente dal motore, ad esempio per aggiornare a ogni fotogramma gli oggetti 3D in base al movimento dello smartphone.
 
-Unity si basa su 3 concetti fondamentali: i \textbf{GameObject}, che è la classe base da cui ogni cosa che si trova nella scena eredita, il \textbf{Transform} che sarebbe il componente presente in ogni GameObject il quale gestisce la posizione(x,y,z), la rotazione e la scala nello spazio 3D della scena ed infine i \textbf{Monobehaviour}, che sono semplici script in C\# che vengono agganciati al GameObject e ne fanno parte i vari componenti di AR Foundation, come ad esempio ARPlaneManager o ARTrackedImageManager, e sfruttano i classici metodi di Unity (Update(), OnEnable(), OnDisable()) per aggiornare la posizione degli oggetti 3D ogni fotogramma in base al movimento dello smartphone.
-
-\subsection{Camera}
-In un progetto normale senza AR, la Camera è l'occhio del giocatore nello spazio virtuale. In AR, la telecamera fa un doppio lavoro:
+\section{Camera}
+In un progetto senza AR la Camera è l'occhio del giocatore nello spazio virtuale. In AR svolge invece un doppio compito:
 
 \begin{itemize}
-    \item  La telecamera virtuale deve muoversi nella scena 3D di Unity esattamente come il telefono si muove nella stanza reale. AR Foundation aggancia il rilevamento di movimento (SLAM) direttamente al componente Transform della Main Camera.
-    \item Normalmente in Unity lo sfondo è un colore pieno o un cielo (Skybox). AR Foundation sostituisce lo sfondo del componente Camera con il flusso video in tempo reale della fotocamera del telefono.
+    \item \textbf{Movimento}: la camera virtuale deve muoversi nella scena 3D esattamente come il telefono si muove nella stanza reale. Il componente \texttt{ARPoseDriver} aggiorna il Transform della Main Camera con la posa (posizione e rotazione) stimata dallo SLAM (\textit{Simultaneous Localization and Mapping}), ovvero la stima simultanea della posizione del dispositivo e della mappa dell'ambiente circostante.
+    \item \textbf{Sfondo}: normalmente lo sfondo è un colore pieno o un cielo (\textit{Skybox}). Tramite \texttt{ARCameraBackground}, AR Foundation lo sostituisce con il flusso video in tempo reale della fotocamera del telefono.
 \end{itemize}
- 
-\subsection{Sistema di Coordinate e Spazio di Scena}
- Unity usa uno spazio di coordinate cartesiane 3D fisso (l'origine (0,0,0) ). I dispositivi AR (ARCore / ARKit) creano invece un proprio sistema di coordinate temporaneo al momento dell'avvio.
-Se metti un GameObject dentro un altro (relazione Padre-Figlio), le coordinate del figlio diventano relative al padre. AR Foundation sfrutta proprio questo concetto standard: crea un oggetto padre (\texttt{XR Origin}) che compensa e converte le coordinate del dispositivo nel sistema di coordinate del mondo di Unity.
 
-\subsection{Prefab e Instanziazione Dinamica}
-Quando il telefono rileva un piano fisicamente (un tavolo, un pavimento), AR Foundation non disegna la geometria dal nulla.
-In Unity, un Prefab è un modello o un oggetto salvato che può essere riutilizzato e AR Foundation usa la classica funzione di Unity Instantiate() per generare un Prefab di tipo "Piano" o "Punto di Ancoraggio" sulla scena non appena il sensore rileva una superficie.
+\section{Sistema di coordinate}
+Unity usa uno spazio di coordinate cartesiane 3D con origine in $(0,0,0)$, in cui per convenzione un'unità corrisponde a un metro. ARCore e ARKit creano invece un proprio sistema di coordinate (\textit{session space}), la cui origine coincide con la posizione del dispositivo all'avvio della sessione. In Unity, quando un GameObject è posto dentro un altro (relazione padre-figlio), le coordinate del figlio sono relative al padre. AR Foundation sfrutta questo meccanismo con un oggetto padre della camera (\texttt{XR Origin}), che converte il session space nel sistema di coordinate del mondo di Unity.
 
-\subsection{Fisica e Raycasting}
-Per capire "dove tocca il dito dello schermo sul pavimento reale", AR Foundation sfrutta il sistema di fisica di Unity:
+\section{Prefab e istanziazione}
+Un \textit{Prefab} è un oggetto salvato come risorsa riutilizzabile, da cui Unity crea copie (istanze) a runtime con la funzione \texttt{Instantiate()}. Quando il telefono rileva un piano fisico (un tavolo, un pavimento), AR Foundation non disegna la geometria dal nulla: \texttt{ARPlaneManager} istanzia il prefab assegnato per ogni piano rilevato, aggiornandolo o rimuovendolo al variare del rilevamento. Lo stesso vale per ancore e altri \textit{trackable}. Lo sviluppatore usa invece \texttt{Instantiate()} per posizionare nella scena i propri contenuti virtuali.
+
+\section{Raycasting}
+Per capire ``dove tocca il dito sullo schermo nel mondo reale'' si usa il \textit{raycasting}, cioè il lancio di un raggio invisibile dalla camera attraverso un punto dello schermo, per trovare ciò che incontra lungo il suo percorso:
+
 \begin{itemize}
-    \item \textbf{Physics Raycasting}:In Unity si traccia un raggio invisibile dalla telecamera verso la scena per rilevare le collisioni (\texttt{Physics.Raycast})
-    \item \textbf{ARRaycastManager}:Estende lo stesso identico concetto: invece di sparare il raggio contro un collider virtuale di Unity, lo spara contro la mappa di punti e superfici generata dai sensori del telefono.
+    \item \textbf{Physics.Raycast}: è il raycasting standard di Unity. Il raggio (ottenibile con \texttt{Camera.ScreenPointToRay}) è testato contro i collider degli oggetti virtuali e restituisce il primo oggetto colpito.
+    \item \textbf{ARRaycastManager}: applica lo stesso concetto, ma non usa il motore fisico di Unity: il raggio è testato contro i piani e i punti caratteristici (\textit{feature point}) rilevati dal sistema AR. Il metodo \texttt{Raycast} restituisce una lista di \texttt{ARRaycastHit} ordinata per distanza, ciascuno con una \texttt{pose} (posizione e rotazione del punto colpito); il tipo di superfici considerate si sceglie con \texttt{TrackableType}.
 \end{itemize}
+
+La posa restituita da \texttt{ARRaycastManager} viene tipicamente usata per istanziare un prefab sulla superficie toccata dall'utente.
