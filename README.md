@@ -1,7 +1,9 @@
 # AR-Foundation-Framework
-For my university thesis, creating an AR App with AR Foundation framework in Unity with ARCore XR Plug-in installed and activated; it also works for iPhone, just install and activate the plugin.
+For my university thesis at UNIMORE with the associated professor Nicola Bicocchi, creating an AR App with AR Foundation framework in Unity with ARCore XR Plug-in installed and activated; it also works for iPhone, just install and activate the plugin.
 
 All the scripts developed by me are inside the MyScripts folder in Assets; I also applied some Design Patterns and software engineering concepts, but obviously I didn't apply everything that could be applied so it can be improved a lot.
+I also add the scripts for the images and diagrams that i made in [Draw.io](https://app.diagrams.net/), in the "Raccolta Tesi" directory.
+There are also my thesis made in LaTeX in [TeXPage](https://www.texpage.com/) and [Overleaf](https://www.overleaf.com/), and my presentation made in [Canva](https://www.canva.com/it_it/).
 
 
 
@@ -14,7 +16,8 @@ All the scripts developed by me are inside the MyScripts folder in Assets; I als
 ---
 
 <div align="center">
-    <img src="Images/MainAppInUseScreen.jpeg" alt="Screen while app is running on my device" width="50%">
+    <img src="Images/MainAppInUseScreen.jpeg" alt="Screen while app is running on my device" width="35%">
+    <img src="Images/ScreenInApp.jpeg" alt="Descrizione della seconda immagine" width="35%">
 </div>
 
 ---
