@@ -1,0 +1,85 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Runtime AR Foundation v3" id="arf-runtime-v3">
+    <mxGraphModel dx="1861" dy="987" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="660" background="#1B1B1B" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=24;fontStyle=1;fontColor=#F5E9D8;" value="Cosa succede a runtime: da C# al motore AR di sistema" vertex="1">
+          <mxGeometry height="40" width="900" x="30" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="f_unity" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#BBA98F;dashed=1;dashPattern=6 4;strokeWidth=2;fontColor=#BBA98F;fontSize=16;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;arcSize=4;" value="Unity" vertex="1">
+          <mxGeometry height="455" width="1300" x="30" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="f_arf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#8AB4FF;dashed=1;dashPattern=6 4;strokeWidth=2;fontColor=#8AB4FF;fontSize=15;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;arcSize=6;" value="AR Foundation (package)" vertex="1">
+          <mxGeometry height="240" width="490" x="60" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="f_plugin" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FF8A8A;dashed=1;dashPattern=6 4;strokeWidth=2;fontColor=#FF8A8A;fontSize=15;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;arcSize=6;" value="ARCore XR Plugin (com.unity.xr.arcore)" vertex="1">
+          <mxGeometry height="240" width="730" x="575" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="f_google" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#7CD87C;dashed=1;dashPattern=6 4;strokeWidth=2;fontColor=#7CD87C;fontSize=15;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;arcSize=6;" value="Google (ARCore)" vertex="1">
+          <mxGeometry height="240" width="490" x="1355" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="cs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7A00FF;gradientColor=#2A0066;gradientDirection=south;strokeColor=#000000;fontColor=#FFFFFF;fontSize=15;arcSize=14;" value="Codice C#&lt;br&gt;(ARRaycastManager.&lt;br&gt;Raycast)" vertex="1">
+          <mxGeometry height="110" width="190" x="90" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sub" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0000FF;gradientColor=#000066;gradientDirection=south;strokeColor=#000000;fontColor=#FFFFFF;fontSize=15;arcSize=14;" value="Subsystem&lt;br&gt;(XRRaycastSubsystem)" vertex="1">
+          <mxGeometry height="110" width="190" x="330" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="prov" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#990000;gradientColor=#4D0000;gradientDirection=south;strokeColor=#000000;fontColor=#FFFFFF;fontSize=15;arcSize=14;" value="Provider ARCore&lt;br&gt;(C# gestito)" vertex="1">
+          <mxGeometry height="110" width="190" x="605" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="pinv" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#004C99;gradientColor=#001F3D;gradientDirection=south;strokeColor=#000000;fontColor=#FFFFFF;fontSize=15;arcSize=14;" value="P/Invoke&lt;br&gt;(ponte da C# al&lt;br&gt;codice nativo)" vertex="1">
+          <mxGeometry height="110" width="190" x="845" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="so" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2D27A;gradientColor=#4A3F1C;gradientDirection=north;strokeColor=#000000;fontColor=#FFFFFF;fontSize=15;arcSize=14;" value="libUnityARCore.so&lt;br&gt;(C++ nativo,&lt;br&gt;già compilata)" vertex="1">
+          <mxGeometry height="110" width="190" x="1085" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="arcore" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8000;gradientColor=#3D1F00;gradientDirection=north;strokeColor=#000000;fontColor=#FFFFFF;fontSize=15;arcSize=14;" value="ARCore SDK&lt;br&gt;libarcore_sdk_c.so&lt;br&gt;(API C)" vertex="1">
+          <mxGeometry height="110" width="190" x="1385" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="gps" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008A00;gradientColor=#003300;gradientDirection=north;strokeColor=#000000;fontColor=#FFFFFF;fontSize=15;arcSize=14;" value="Google Play Services&lt;br&gt;for AR&lt;br&gt;(motore AR di sistema)" vertex="1">
+          <mxGeometry height="110" width="190" x="1625" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="n_il2cpp" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#999900;strokeColor=#666600;fontColor=#FFFFFF;fontSize=14;" value="IL2CPP: il C# (app, AR Foundation, provider) diventa C++ e viene compilato con l&#39;NDK in una .so&lt;br&gt;Stesso binario: fin qui nessun P/Invoke, solo normali chiamate C++" vertex="1">
+          <mxGeometry height="80" width="705" x="90" y="415" as="geometry" />
+        </mxCell>
+        <mxCell id="n_jni" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=#999900;strokeColor=#666600;fontColor=#FFFFFF;fontSize=14;" value="JNI (ponte nativo &amp;lt;-&amp;gt; Java): verifica installazione di Play Services e permessi" vertex="1">
+          <mxGeometry height="80" width="260" x="1045" y="415" as="geometry" />
+        </mxCell>
+        <mxCell id="n_ret" parent="1" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontSize=15;fontStyle=2;fontColor=#BBA98F;" value="Frecce bidirezionali: i risultati fanno il percorso inverso e arrivano allo sviluppatore (ARPlane, hit del raycast)" vertex="1">
+          <mxGeometry height="40" width="1300" x="30" y="555" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="cs" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#E6E6E6;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="sub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="sub" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#E6E6E6;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="prov">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="prov" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#E6E6E6;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="pinv">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="pinv" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#E6E6E6;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="so">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="so" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#E6E6E6;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="arcore">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="arcore" style="endArrow=classic;startArrow=classic;html=1;strokeColor=#E6E6E6;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="gps">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" edge="1" parent="1" source="n_il2cpp" style="endArrow=none;html=1;dashed=1;strokeColor=#999900;strokeWidth=2;exitX=0.1348;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="cs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" edge="1" parent="1" source="n_il2cpp" style="endArrow=none;html=1;dashed=1;strokeColor=#999900;strokeWidth=2;exitX=0.4752;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="sub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" edge="1" parent="1" source="n_il2cpp" style="endArrow=none;html=1;dashed=1;strokeColor=#999900;strokeWidth=2;exitX=0.8652;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="prov">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" edge="1" parent="1" source="n_jni" style="endArrow=none;html=1;dashed=1;strokeColor=#999900;strokeWidth=2;exitX=0.519;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="so">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
