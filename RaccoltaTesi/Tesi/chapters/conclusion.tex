@@ -9,16 +9,16 @@ AR Foundation è la soluzione più adatta quando il team di sviluppo è ridotto,
  \newline
  
  Come sviluppi futuri si individuano diverse direzioni di ottimizzazione. In
-primo luogo, la verifica del frame rate target e del cap a 30~FPS: il target
+primo luogo, la verifica del frame rate target e del cap (limite al frame rate che l’applicazione stessa si impone; sarebbe Application.targetFrameRate (insieme a vSyncCount)) a 30 FPS: il target
 è la frequenza a cui l'applicazione dovrebbe girare e determina il tempo
-massimo per produrre un frame (circa 33,3~ms a 30~FPS), per cui un frame time
+massimo per produrre un frame (circa 33,3 ms a 30 FPS), per cui un frame time
 vicino a tale valore non indica necessariamente una CPU satura, ma può
 riflettere un'attesa imposta dal limite. In secondo luogo, l'identificazione,
 tramite la vista \textit{Hierarchy} del Profiler ordinata per \textit{GC
 Alloc}, dell'origine delle allocazioni, cioè delle richieste di memoria sul
 \textit{Managed Heap}, l'area gestita automaticamente per il codice C\#; dove
 queste dipendono dal codice dell'applicazione, possono essere ridotte
-mediante \textit{caching} dei risultati di operazioni costose, ovvero salvarli in una variabile i riusarli, \textit{object
+mediante \textit{caching} dei risultati di operazioni costose, ovvero salvarli in una variabile e riusarli, \textit{object
 pooling}, ovvero riutilizzo di oggetti attivandoli e disattivandoli al posto di
 \texttt{Instantiate} e \texttt{Destroy} e riuso di \textit{buffer}, ad
 esempio la lista dei risultati dei raycast.
