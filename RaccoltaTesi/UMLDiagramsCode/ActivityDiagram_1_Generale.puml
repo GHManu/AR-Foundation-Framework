@@ -1,0 +1,37 @@
+@startuml ActivityDiagram_1_Generale
+title Activity Diagram: app AR Markerless / Video See-Through (quadro generale)
+skinparam shadowing false
+skinparam defaultFontSize 12
+skinparam ArrowColor #37474F
+skinparam ActivityBackgroundColor #E1F2FB
+skinparam ActivityBorderColor #5B9BD5
+skinparam ActivityDiamondBackgroundColor #FFFDE7
+skinparam ActivityDiamondBorderColor #FFC107
+skinparam NoteBackgroundColor #FFFDE7
+skinparam NoteBorderColor #FFC107
+skinparam PartitionBorderColor #90A4AE
+
+start
+while (App in esecuzione?) is (sì)
+
+  partition "Tracking AR (parallelo)" #F0F8E8 {
+    fork
+      :Calibrazione del dispositivo;
+    fork again
+      :Rilevazione dei piani;
+    fork again
+      :Rilevazione point cloud;
+    end fork
+  }
+
+  partition "Input utente" #F3E5F5 {
+    if (Tipo di input?) then (Gesto sulla scena)
+      :Gestione del gesto sulla scena\n(vedi diagramma Gesto sulla scena);
+    else (Comando GUI)
+      :Gestione del comando GUI\n(vedi diagrammi Comandi\ne Delete e Undo);
+    endif
+  }
+
+endwhile (no)
+stop
+@enduml

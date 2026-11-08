@@ -1,0 +1,114 @@
+using UnityEngine;
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
+/*
+ Gestisce i colori dei piani sia reattivamente in base all'orientamento (Orizzontale/Verticale), 
+sia dinamicamente per evidenziare il piano attualmente puntato dall'utente durante l'interazione.
+ */
+public class CustomPlaneManager : MonoBehaviour
+{
+    [Header("Riferimenti")]
+    [SerializeField] private ARMainApplication ar_app;
+    [SerializeField] private ARPlaneManager arPlaneManager;
+
+    [Header("Colori Piani")]
+    [SerializeField] private Color horizontalColor = new Color(0f, 1f, 0f, 0.35f); // Verde semitrasparente
+    [SerializeField] private Color verticalColor = new Color(0f, 0.5f, 1f, 0.35f);   // Blu semitrasparente
+    [SerializeField] private Color defaultColor = new Color(1f, 0.9f, 0f, 0.35f);   // Giallo semitrasparente
+    [SerializeField] private Color activeColor = new Color(1f, 0.2f, 0.2f, 0.6f);   // Rosso evidenziato
+
+    private ARPlane currentlyActivePlane;
+
+    private void Awake()
+    {
+        if (arPlaneManager == null)
+            arPlaneManager = GetComponent<ARPlaneManager>();
+
+        ar_app = GetComponent<ARMainApplication>();
+
+    }
+
+    private void OnEnable()
+    {
+        if (arPlaneManager != null)
+            arPlaneManager.trackablesChanged.AddListener(OnPlanesChanged);
+        
+        if (ar_app != null)                                          
+            ar_app.On_dragging_state_changed += OnDraggingStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (arPlaneManager != null)
+            arPlaneManager.trackablesChanged.RemoveListener(OnPlanesChanged);
+
+        if (ar_app != null)
+            ar_app.On_dragging_state_changed -= OnDraggingStateChanged;
+    }
+
+    private void OnDraggingStateChanged(bool is_dragging)
+    {
+        if (!is_dragging) ClearHighlight();
+    }
+    private void OnPlanesChanged(ARTrackablesChangedEventArgs<ARPlane> args)
+    {
+        foreach (var plane in args.added)
+            ApplyDefaultPlaneColor(plane);
+
+        foreach (var plane in args.updated)
+        {
+            if (plane != currentlyActivePlane)
+                ApplyDefaultPlaneColor(plane);
+        }
+    }
+
+    public void HighlightPlane(ARPlane plane)
+    {
+        if (currentlyActivePlane != null && currentlyActivePlane != plane)
+        {
+            ApplyDefaultPlaneColor(currentlyActivePlane);
+        }
+
+        currentlyActivePlane = plane;
+        if (currentlyActivePlane != null)
+        {
+            SetPlaneColor(currentlyActivePlane, activeColor);
+        }
+    }
+
+    public void ClearHighlight()
+    {
+        if (currentlyActivePlane != null)
+        {
+            ApplyDefaultPlaneColor(currentlyActivePlane);
+            currentlyActivePlane = null;
+        }
+    }
+
+    private void ApplyDefaultPlaneColor(ARPlane plane)
+    {
+        if (plane == null) return;
+        //questa struttura, switch expression, mi permette di assegnare un valore ad alignment a seconda di condizioni a sx di =>
+        // è uno switch compatto
+        Color targetColor = plane.alignment switch
+        {
+            PlaneAlignment.HorizontalUp or PlaneAlignment.HorizontalDown => horizontalColor,
+            PlaneAlignment.Vertical => verticalColor,
+            _ => defaultColor   //_ è come il default dello switch
+        };
+
+        SetPlaneColor(plane, targetColor);
+    }
+
+    private void SetPlaneColor(ARPlane plane, Color color)
+    {
+        //?? --> Operatore Null-Coalescing che controlla se l'espressione alla sua sinistra restituisce null
+        // se plane.GetComponent<Renderer>() non è null, allora ignora la parte destra e continua con quella sx,
+        // se invece è null esegue la parte dx che cerca il componente nei figli
+        Renderer renderer = plane.GetComponent<Renderer>() ?? plane.GetComponentInChildren<Renderer>();
+        if (renderer != null && renderer.material != null)
+        {
+            renderer.material.color = color;
+        }
+    }
+}

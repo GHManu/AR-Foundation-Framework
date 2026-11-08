@@ -1,0 +1,43 @@
+@startuml
+title Activity Diagram: gesto sulla scena (selezione e drag)
+skinparam shadowing false
+skinparam defaultFontSize 12
+skinparam ArrowColor #37474F
+skinparam ActivityBackgroundColor #E1F2FB
+skinparam ActivityBorderColor #5B9BD5
+skinparam ActivityDiamondBackgroundColor #FFFDE7
+skinparam ActivityDiamondBorderColor #FFC107
+skinparam NoteBackgroundColor #FFFDE7
+skinparam NoteBorderColor #FFC107
+skinparam PartitionBorderColor #90A4AE
+
+start
+:Rilevato tocco / click\nsu oggetto o superficie;
+note right
+  <b>Editor (XR Simulator)</b>
+  click mouse, ARCamera virtuale,
+  movimento con WASD
+  <b>Mobile</b>
+  touch, camera e sensori
+end note
+:AR Raycast verso i piani rilevati;
+
+if (Raycast colpisce un oggetto?) then (sì)
+  :Seleziona oggetto\ne attiva stato "drag";
+  :Cambia colore di piani\ne point cloud\n(manager custom); <<#DDBDE5>>
+  while (Drag attivo?) is (sì)
+    :Raycast su superficie piana;
+    if (Punto valido su piano?) then (sì)
+      :Sposta oggetto\nsul punto colpito;
+    else (no)
+      :Mantieni ultima\nposizione valida;
+    endif
+  endwhile (rilascio)
+  :Disattiva stato "drag"\ne ripristina colori default;
+  :Registra azione nello storico;
+else (no)
+  :Nessuna azione;
+endif
+
+stop
+@enduml

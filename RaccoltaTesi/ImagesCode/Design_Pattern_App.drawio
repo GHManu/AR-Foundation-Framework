@@ -1,0 +1,50 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Design Pattern" id="design-pattern">
+    <mxGraphModel dx="1414" dy="750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="720" background="#1B1B1B" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;fontStyle=1;fontColor=light-dark(#F5E9D8,#FFFFFF);" value="Design pattern dell&#39;app: come collaborano" vertex="1">
+          <mxGeometry height="30" width="620" x="40" y="5" as="geometry" />
+        </mxCell>
+        <mxCell id="state" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0000FF;gradientColor=#000066;gradientDirection=south;strokeColor=#000000;fontColor=#FFFFFF;fontSize=12;arcSize=10;" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;b&gt;STATE&lt;/b&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;IObjectInteractionState&lt;/font&gt;&lt;br&gt;Idle - Spawn - Drag - Drop&lt;br&gt;&lt;i&gt;il comportamento cambia in base allo stato corrente&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="150" width="300" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="command" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7A00FF;gradientColor=#2A0066;gradientDirection=south;strokeColor=#000000;fontColor=#FFFFFF;fontSize=12;arcSize=10;" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;b&gt;COMMAND&lt;/b&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;ICommand: Execute() / Undo()&lt;/font&gt;&lt;br&gt;Spawn - Delete - Rotate - Scale - Move&lt;br&gt;&lt;i&gt;ogni azione è un oggetto: CommandHistory abilita l&#39;undo&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="150" width="300" x="620" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ctx" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF8000;gradientColor=#3D1F00;gradientDirection=north;strokeColor=#000000;fontColor=#FFFFFF;fontSize=12;arcSize=14;" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;b&gt;ARMainApplication&lt;/b&gt;&lt;br&gt;(context e subject)&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;ChangeState()- ExecuteCommand()&lt;/font&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="290" x="335" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="observer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#008A00;gradientColor=#003300;gradientDirection=north;strokeColor=#000000;fontColor=#FFFFFF;fontSize=12;arcSize=10;" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;b&gt;OBSERVER&lt;/b&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot;&gt;event Action: On_dragging_state_changed, On_object_spawned&lt;/font&gt;&lt;br&gt;UI e manager custom si iscrivono con +=&lt;br&gt;&lt;i&gt;le classi non si conoscono direttamente&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="150" width="300" x="40" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="factory" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#990000;gradientColor=#4D0000;gradientDirection=south;strokeColor=#000000;fontColor=#FFFFFF;fontSize=12;arcSize=10;" value="&lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;b&gt;FACTORY METHOD&lt;/b&gt;&lt;br&gt;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;font face=&quot;Courier New&quot;&gt;ASpawnObjectFactory -&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 17px;&quot;&gt;&lt;font face=&quot;Courier New&quot;&gt;SpawnObject(context)&lt;/font&gt;&lt;/font&gt;&lt;/div&gt;&lt;font style=&quot;font-size: 17px;&quot;&gt;GeometricShapesFactory&lt;br&gt;&lt;i&gt;nuovi prefab senza modificare il codice esistente&lt;/i&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="150" width="300" x="620" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="flow" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=12;fillColor=#999900;strokeColor=#666600;fontColor=#FFFFFF;fontSize=11;gradientColor=default;" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;b&gt;Esempio, spawn di un oggetto:&lt;/b&gt; tocco su un piano&amp;nbsp; SpawnState -&amp;gt; SpawnObjectCommand -&amp;gt; Factory crea il prefab -&amp;gt; NotifyObjectSpawned (Observer)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="680" x="140" y="635" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="state" style="endArrow=classic;startArrow=classic;html=1;strokeColor=light-dark(#E6E6E6,#FFE599);strokeWidth=2;edgeStyle=orthogonalEdgeStyle;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=light-dark(#E6E6E6,#FFF2CC);fontSize=15;" target="ctx" value="usa il context">
+          <mxGeometry relative="1" x="0.0566" y="-10" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="ctx" style="endArrow=classic;html=1;strokeColor=light-dark(#E6E6E6,#FFE599);strokeWidth=2;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=light-dark(#E6E6E6,#FFF2CC);fontSize=10;" target="command" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;ExecuteCommand(cmd)&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="state" style="endArrow=classic;html=1;strokeColor=light-dark(#E6E6E6,#FFE599);strokeWidth=2;dashed=1;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=light-dark(#E6E6E6,#FFF2CC);fontSize=10;" target="command" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;SpawnState crea SpawnObjectCommand&lt;/font&gt;">
+          <mxGeometry relative="1" y="-15" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="command" style="endArrow=classic;html=1;strokeColor=light-dark(#E6E6E6,#FFE599);strokeWidth=2;edgeStyle=orthogonalEdgeStyle;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=light-dark(#E6E6E6,#FFF2CC);fontSize=13;" target="factory" value="SpawnObject(context)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="ctx" style="endArrow=classic;html=1;strokeColor=light-dark(#E6E6E6,#FFE599);strokeWidth=2;edgeStyle=orthogonalEdgeStyle;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;fontColor=light-dark(#E6E6E6,#FFF2CC);fontSize=16;" target="observer" value="Invoke(eventi)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

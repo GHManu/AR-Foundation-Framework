@@ -1,0 +1,39 @@
+@startuml ActivityDiagram_3_Comandi
+title Activity Diagram: gestione dei comandi GUI
+skinparam shadowing false
+skinparam defaultFontSize 12
+skinparam ArrowColor #37474F
+skinparam ActivityBackgroundColor #E1F2FB
+skinparam ActivityBorderColor #5B9BD5
+skinparam ActivityDiamondBackgroundColor #FFFDE7
+skinparam ActivityDiamondBorderColor #FFC107
+skinparam NoteBackgroundColor #FFFDE7
+skinparam NoteBorderColor #FFC107
+skinparam PartitionBorderColor #90A4AE
+
+start
+:Ricezione comando\n(pulsanti / slider);
+
+partition "Gestione comando" #FFF3E0 {
+  switch (comando)
+  case (Create)
+    :Creazione oggetto selezionato\nsu piano rilevato;
+    :Registra azione nello storico;
+  case (Rotate)
+    :Rotazione oggetto\nselezionato o ultimo creato;
+    :Registra azione nello storico;
+  case (Scale)
+    :Scalatura oggetto\nselezionato o ultimo creato;
+    :Registra azione nello storico;
+  case (Reset)
+    :Eliminazione di tutti gli oggetti;
+    :Svuota storico azioni;
+  case (Delete)
+    :Eliminazione temporanea con timer\n(vedi diagramma Delete e Undo);
+  case (Undo)
+    :Annullamento dell'ultima azione\n(vedi diagramma Delete e Undo);
+  endswitch
+}
+
+stop
+@enduml
