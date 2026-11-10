@@ -100,7 +100,7 @@ Non tutte le funzionalità sono supportate da tutte le piattaforme(Plug-in di Un
     \end{tabular}
 \end{center}
 
- \subsection{Architettura}
+\section{Architettura}
  
 L'architettura di Unity AR Foundation \cite{AR-Foundation-1} si basa su tre concetti fondamentali, pensati per astrarre le differenze tra gli SDK nativi di realtà aumentata: \textbf{Subsystems}, \textbf{Managers} ed \textbf{Extensions}. 
 
@@ -116,7 +116,7 @@ Al livello più alto si trova \texttt{ARTrackedImageManager}, un componente (\te
 Al livello intermedio si trova \texttt{XRImageTrackingSubsystem}, il sottosistema che definisce l'interfaccia standard di Unity per il tracciamento di immagini, indipendente dal dispositivo. Stabilisce le regole e i metodi che ogni piattaforma (Android, iOS, ecc.) deve implementare, garantendo così il principio cross-platform.
 Al livello più basso si trova il provider specifico della piattaforma, ovvero l'implementazione concreta fornita dal plug-in: ARCore XR Plugin su Android, ARKit XR Plugin su iOS. Il provider traduce i comandi generici del sottosistema in chiamate allo SDK nativo, che comunica con gli algoritmi di visione artificiale di ARCore per riconoscere, attraverso la fotocamera, i punti caratteristici (\textit{feature points}) dell'immagine di riferimento. Quando l'app viene compilata per Android, Unity attiva automaticamente il provider corrispondente.
 
-\subsubsection{Subsystems}
+\subsection{Subsystems}
 Un \textbf{sottosistema}, implementato in Unity tramite la classe base \texttt{SubsystemWithProvider} \cite{AR-Foundation-1}, definisce il ciclo di vita e l'interfaccia di scripting di una specifica funzionalità del motore. Ad esempio, \texttt{XRPlaneSubsystem} definisce l'interfaccia di tracciamento dei piani: lo stesso codice applicativo può usare un piano rilevato sia su iOS sia su Android, perché AR Foundation non contiene le implementazioni a basso livello. Queste sono fornite dai \textbf{provider}, distribuiti in pacchetti detti \textbf{plug-in provider} (\textit{Google ARCore XR} per Android, \textit{Apple ARKit XR} per iOS), e costituiscono il livello di astrazione tra il codice applicativo e gli SDK proprietari.
 
 Tutti i sottosistemi condividono lo stesso ciclo di vita (creazione, avvio, arresto, distruzione), gestito dall'\texttt{XRLoader} attivo nel progetto: ogni plug-in provider include il proprio loader, che istanzia i sottosistemi all'avvio dell'app e li distrugge alla chiusura (configurabile da \textit{Project Settings $>$ XR Plug-in Management}).
@@ -135,12 +135,12 @@ if (trackedImageManager.descriptor.supportsMutableLibrary)
 
 I \textbf{sottosistemi di tracciamento} rilevano e seguono entità fisiche dell'ambiente dette \textbf{trackable} (ad esempio \texttt{XRPlaneSubsystem} rileva i \texttt{BoundedPlane}). Ogni trackable ha un \textbf{TrackableId}, un GUID (Globally Unique Identifier) a 128 bit che lo identifica in modo univoco, durante la sessione AR, nelle fasi di aggiunta, aggiornamento e rimozione. In \texttt{UnityEngine.XR.ARSubsystems} i trackable sono \texttt{struct} ad alte prestazioni che implementano \texttt{ITrackable}; in \texttt{UnityEngine.XR.ARFoundation} sono invece componenti \texttt{MonoBehaviour} (es. \texttt{ARPlane}) che le incapsulano.
 
-\subsubsection{Managers}
+\subsection{Managers}
 Un \textbf{Manager} è un componente Unity (\texttt{MonoBehaviour}) che espone un'interfaccia ad alto livello per configurare una specifica funzionalità AR (piani, immagini tracciate, volti). I Manager ereditano da \texttt{SubsystemLifecycleManager} e fanno da ponte tra i dati dei sottosistemi XR e gli oggetti della scena, sincronizzandone il ciclo di vita con quello del componente: in \texttt{OnEnable} invocano \texttt{Start()} sul sottosistema associato, in \texttt{OnDisable} invocano \texttt{Stop()}.
 
 I \textit{Trackable Manager} (\texttt{ARPlaneManager}, \texttt{ARTrackedImageManager}, ...) creano, aggiornano e distruggono automaticamente i \texttt{GameObject} dei trackable, istanziandoli come figli di \texttt{XR Origin} e posizionandoli rispetto al suo spazio di riferimento. Si può assegnare un \textit{Prefab} per la loro rappresentazione visiva (ad esempio una mesh per un piano); se manca, il Manager crea un \texttt{GameObject} vuoto con il componente \texttt{ARTrackable} idoneo, che aggiunge a runtime anche a un Prefab che ne fosse privo.
 
-\subsubsection{Extensions}
+\subsection{Extensions}
 AR Foundation non espone tramite astrazioni C\# tutte le API dei singoli SDK nativi: offre ciò che ARKit, ARCore e gli altri provider hanno in comune, mentre le funzionalità specifiche di una piattaforma restano fuori. Per colmare questo divario fornisce puntatori nativi grezzi, la proprietà nativePtr (di tipo IntPtr), che permettono di accedere direttamente alle strutture del provider. È presente, ad esempio, su XRSessionSubsystem e sulla maggior parte dei trackable (piani, immagini, volti), e tramite P/Invoke o un plug-in nativo consente di recuperare oggetti interni della piattaforma come ARFrame, la sessione nativa (ARSession su iOS, ArSession su Android) e gli elementi geometrici dell’ambiente. Struttura e indirizzo sono definiti da ciascun plug-in provider, quindi il layout esatto va verificato nella sua documentazione e nei suoi header. Per convenzione il puntatore indirizza una struttura versionata il cui primo membro è un intero con la versione dell’interfaccia, seguito dai puntatori grezzi:
 
 \begin{lstlisting}[language=C]
@@ -157,26 +157,26 @@ Il puntatore va usato con cautela: bisogna verificare che non sia \texttt{IntPtr
 
 
 
-\subsection{Componenti Principali}
+\section{Componenti Principali}
 AR Foundation\cite{AR-Foundation-3} prevede l'uso di alcuni concetti fondamentali, i quali sono comuni a tutte le AR App.
 
-\subsubsection{AR Session}
+\subsection{AR Session}
 Il GameObject AR Session gestisce lo stato del dispositivo AR e la sessione corrente: quando tutti i componenti sono inizializzati e funzionano correttamente, lo stato assume il valore di \textit{SessionTracking}. Questo componente controlla l'intero ciclo di vita dell'esperienza di realtà aumentata.
 Contiene inoltre lo script AR Input Manager, fondamentale per abilitare il tracciamento dello spazio circostante.
 
-\subsubsection{XR Origin}
+\subsection{XR Origin}
 Il GameObject XR Origin converte i dati di tracciamento del dispositivo (come punti di interesse o piani detected) nello spazio coordinate di Unity. Ciò garantisce che la scena virtuale sia perfettamente sincronizzata con il mondo reale e ospita al suo interno la AR Camera.
 Mentre gli elementi tracciabili vengono gestiti dal dispositivo nello "spazio sessione" (relativo al sistema di coordinate locale del dispositivo), i GameObject in Unity vengono posizionati nello "spazio mondo".
 
-\subsubsection{Tracked Pose Driver (InputSystem)}
+\subsection{Tracked Pose Driver (InputSystem)}
 Il Tracked Pose Driver è un componente applicato alla fotocamera AR che ne aggiorna la posizione e la rotazione locali in tempo reale, basandosi sulle informazioni di tracciamento fornite dal sensore/dispositivo.
 
-\subsubsection{AR Camera Manager}
+\subsection{AR Camera Manager}
 L'AR Camera Manager gestisce il flusso video della fotocamera principale del dispositivo, combinando lo sfondo reale con gli elementi grafici 3D virtuali. Attraverso questo script è possibile configurare l'autofocus (di norma consigliato attivo, tranne nei contesti di inquadratura esclusivamente a lunga distanza).
 Consente inoltre di attivare la stima della luminosità (light estimation) per aggiornare la sorgente di luce della scena Unity e di effettuare lo switch tra la fotocamera posteriore e quella frontale.
 
 
-\subsection{Perché AR Foundation?}
+\section{Perché AR Foundation?}
 
 Uno \textbf{SDK} (Software Development Kit)[13] è un insieme di strumenti forniti dal produttore di una piattaforma per sviluppare software per essa: compilatore, librerie con un’interfaccia pubblica detta \textbf{API} (Application Programming Interface), che permette a software diversi di comunicare, documentazione e informazioni sulle licenze di distribuzione. Gli SDK sono quindi \textbf{specifici per un ecosistema}: nel caso della realtà aumentata, ARKit di Apple funziona sostanzialmente solo su iOS e ARCore di Google solo su Android, e \textbf{il codice scritto per uno non è riutilizzabile sull’altro}.
 
